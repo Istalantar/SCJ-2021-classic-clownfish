@@ -1,30 +1,46 @@
+from typing import List
+
 
 class Puzzle:
-    puzzle: str
-    mixed_puzzle: str
+    original_puzzle = None
+    mixed_puzzle = None
 
-    def __init__(self):
+    def __init__(self, puzzle: str):
+        """
+
+        :param puzzle: Puzzle as string
+        """
         pass
 
-    def get_puzzle(self, filename: str):
+    def randomize_puzzle(self, puzzle_size: int):
         """
-        Open puzzle from text file (ascii art)
-        :param filename:
+
+        :param puzzle_size: Size of the puzzle -> x by x
         :return:
         """
         pass
 
-    def randomize_puzzle(self):
+    def move_up(self):
+        pass
+
+    def move_right(self):
+        pass
+
+    def move_down(self):
+        pass
+
+    def move_left(self):
         pass
 
     def add_frame(self):
+        """
+        Adds the border around the single pieces of the puzzle
+        :return:
+        """
         pass
 
-    def print_puzzle(self):
+    def is_solved(self) -> bool:
         pass
 
-    def print_mixed_puzzle(self):
-        pass
-
-    def start(self):
+    def print(self, puzzle):
         pass
