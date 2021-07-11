@@ -1,5 +1,6 @@
 from typing import List
 
+
 class Image:
     def __init__(self):
         pass
