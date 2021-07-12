@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from blessed import Terminal
 from table import make_table
 
@@ -19,23 +21,33 @@ class Highscore:
         :param time: Time (in seconds) used by the player so solve the puzzle
         :param moves: Moves needed by the player to solve the puzzle
         """
-        new_entry = {'Puzzle': image, 'Name': player_name, 'Time': time, 'Moves': moves}
-        self.highscore.append(new_entry)
+        self.highscore.append({'Puzzle': image, 'Name': player_name, 'Time': time, 'Moves': moves})
         self.__save_entry()
 
-    def display(self) -> None:
-        """Display the player highscore"""
-        term = Terminal()
+    def display(self, puzzle: str, sort: str = 'Time') -> str:
+        """Display the player highscore
+
+        :param puzzle: Name of the puzzle for which to show the highscore
+        :param sort: Sort the highscore after Time or Moves. Default is Time.
+        :return: Returns the highscore as a table
+        """
+        # get highscores for requested puzzle
+        highscore = []
+        for entry in self.highscore:
+            if entry['Puzzle'] == puzzle:
+                highscore.append(entry)
+
+        # sort the highscore
+        if sort == 'Time':
+            highscore = sorted(highscore, key=itemgetter('Time'))
+        elif sort == 'Moves':
+            highscore = sorted(highscore, key=itemgetter('Moves'))
 
         table = make_table(
-            rows=[[entry['Puzzle'], entry['Name'], entry['Time'], entry['Moves']] for entry in self.highscore],
+            rows=[[entry['Puzzle'], entry['Name'], entry['Time'], entry['Moves']] for entry in highscore],
             labels=['Puzzle', 'Name', 'Time', 'Moves'])
 
-        with term.fullscreen(), term.cbreak(), term.hidden_cursor():
-            print(term.move_y(2))
-            for line in table.split('\n'):
-                print(term.center(line))
-            term.inkey()
+        return table
 
     def __save_entry(self) -> None:
         try:
@@ -46,13 +58,6 @@ class Highscore:
         except FileNotFoundError:
             pass  # TODO: error handling
 
-    def __save(self) -> None:
-        try:
-            with open(self.filename, mode='w+') as file:
-                file.write('highscore')  # TODO
-        except FileNotFoundError:
-            pass  # TODO: error handling
-
     def __read(self) -> None:
         try:
             with open(self.filename) as file:
@@ -60,12 +65,17 @@ class Highscore:
                 for line in lines:
                     entry = line.strip().split(',')
                     self.highscore.append({'Puzzle': entry[0], 'Name': entry[1],
-                                           'Time': entry[2], 'Moves': entry[3]})
+                                           'Time': int(entry[2]), 'Moves': int(entry[3])})
 
         except FileNotFoundError:
             pass  # TODO: error handling
 
 
 if __name__ == "__main__":
-    test = Highscore()
-    test.add('Blade', 'Dave', 999, 999)
+    term = Terminal()
+    score = Highscore()
+    with term.fullscreen(), term.cbreak(), term.hidden_cursor():
+        print(term.move_y(2))
+        for pline in score.display('amogus').split('\n'):
+            print(term.center(pline))  # prints each line seperately, otherwise it will not be centered
+        term.inkey()
