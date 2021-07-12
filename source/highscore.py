@@ -1,3 +1,4 @@
+import os
 from operator import itemgetter
 
 from blessed import Terminal
@@ -51,6 +52,11 @@ class Highscore:
 
         return table
 
+    def delete(self) -> None:
+        """Deletes all highscores"""
+        self.highscore.clear()
+        os.remove(self.filename)  # file will be created again when saving new data
+
     def __save_entry(self) -> None:
         try:
             with open(self.filename, mode='a') as file:
@@ -76,6 +82,9 @@ class Highscore:
 if __name__ == "__main__":
     term = Terminal()
     score = Highscore()
+    score.add('amogus', 'andi', 99, 33)
+    score.add('amogus', 'sven', 999, 3)
+    score.add('amogus', 'kevin', 9, 3)
     with term.fullscreen(), term.cbreak(), term.hidden_cursor():
         print(term.move_y(2))
         for pline in score.display('amogus').split('\n'):
