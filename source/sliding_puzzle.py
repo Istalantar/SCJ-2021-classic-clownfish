@@ -85,7 +85,7 @@ class Puzzle:
 
         for i, line in enumerate(data):
             for j, column in enumerate(walk(line, width)):
-                pieces[i//height][j//width].append(column)
+                pieces[i//height][j].append(column)
 
         self.pieces = pieces
 
