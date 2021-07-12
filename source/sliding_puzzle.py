@@ -72,9 +72,9 @@ class Puzzle:
 
         # We cannot handle decimals
         if not width.is_integer():
-            raise ValueError(f'Image cannot be evenly split by width: {len(image[0])} / {horizontal}')
+            raise ValueError(f'Image cannot be evenly split by width: {len(data[0])} / {horizontal}')
         elif not height.is_integer():
-            raise ValueError(f'Image cannot be evenly split by height: {len(image)} / {vertical}')
+            raise ValueError(f'Image cannot be evenly split by height: {len(data)} / {vertical}')
 
         # Even though width and height have no decimals, they are still floats
         width, height = int(width), int(height)
