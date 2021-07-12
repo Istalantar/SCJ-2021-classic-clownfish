@@ -36,6 +36,8 @@ class Highscore:
         for entry in self.highscore:
             if entry['Puzzle'] == puzzle:
                 highscore.append(entry)
+        if len(highscore) == 0:
+            return 'No highscore for this puzzle available.'
 
         # sort the highscore
         if sort == 'Time':
