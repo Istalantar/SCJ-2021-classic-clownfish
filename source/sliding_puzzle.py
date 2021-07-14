@@ -53,7 +53,7 @@ class PuzzlePiece:
     @property
     def empty(self) -> bool:
         """Whether this piece is empty (not filled)."""
-        return bool(self)
+        return not bool(self)
 
     def append(self, string: str) -> None:
         """Append a string to the end of the data list."""
@@ -165,8 +165,7 @@ class Puzzle:
         """Move the piece above the empty piece down"""
         empty_pos = self._get_empty_piece_position()
         # return if empty piece is on the first row
-        top_row = self.rows[0]
-        if empty_pos.index in [piece.index for piece in top_row]:
+        if empty_pos.x == 0:
             return
         self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x - 1, y2=empty_pos.y)
 
@@ -174,8 +173,8 @@ class Puzzle:
         """Move the piece below the empty piece up"""
         empty_pos = self._get_empty_piece_position()
         # return if empty piece is on the last row
-        last_row = self.rows[-1]
-        if empty_pos.index in [piece.index for piece in last_row]:
+        last_row_x = len(self.rows[0]) - 1
+        if empty_pos.x == last_row_x:
             return
         # swap the empty piece with the target piece
         self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x + 1, y2=empty_pos.y)
@@ -184,10 +183,8 @@ class Puzzle:
         """Move the piece at the right of the empty piece to the left"""
         empty_pos = self._get_empty_piece_position()
         # return if empty piece is on the last column
-        puzzle_width = len(self.rows[0])
-        last_column_y = puzzle_width - 1
-        last_column = [piece for row in self.rows for j, piece in enumerate(row) if j == last_column_y]
-        if empty_pos.index in [piece.index for piece in last_column]:
+        last_column_y = len(self.rows[0]) - 1
+        if empty_pos.y == last_column_y:
             return
         self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x, y2=empty_pos.y + 1)
 
@@ -195,8 +192,7 @@ class Puzzle:
         """Move the piece at the left of the empty piece to the right"""
         empty_pos = self._get_empty_piece_position()
         # return if empty piece is on the first column
-        first_column = [piece for row in self.rows for j, piece in enumerate(row) if j == 0]
-        if empty_pos.index in [piece.index for piece in first_column]:
+        if empty_pos.y == 0:
             return
         # swap the empty piece with the target piece
         self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x, y2=empty_pos.y - 1)
