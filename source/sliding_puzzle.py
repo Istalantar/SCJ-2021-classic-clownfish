@@ -10,19 +10,23 @@ def walk(string: str, step: int) -> str:
 class PuzzlePiece:
     """Piece of a bigger puzzle."""
 
+    index: int
+
     width: int
     height: int
 
-    __slots__ = ('width', 'height', '_data')
+    __slots__ = ('index', 'width', 'height', '_data')
 
-    def __init__(self, width: int, height: int) -> None:
+    def __init__(self, index: int, width: int, height: int) -> None:
+        self.index = index
+
         self.width = width
         self.height = height
 
         self._data = []
 
     def __repr__(self) -> str:
-        return f'<PuzzlePiece width={self.width} height={self.height} empty={self.empty}>'
+        return f'<PuzzlePiece index={self.index} width={self.width} height={self.height} empty={self.empty}>'
 
     def __str__(self) -> str:
         return '\n'.join(self.data)
@@ -80,7 +84,10 @@ class Puzzle:
         width, height = int(width), int(height)
 
         pieces: List[List[PuzzlePiece]] = [
-            [PuzzlePiece(width, height) for _ in range(horizontal)] for _ in range(vertical)
+            [
+                # This will give each PuzzlePiece an index from 0 to (horizontal*vertical - 1)
+                PuzzlePiece(i, width, height) for i in range(v*horizontal, v*horizontal+horizontal)
+            ] for v in range(vertical)
         ]
 
         for i, line in enumerate(data):
@@ -90,7 +97,19 @@ class Puzzle:
         self.pieces = pieces
 
     def __repr__(self) -> str:
-        return f'<Puzzle pieces={self.pieces}>'
+        return f'<Puzzle solved={self.solved} pieces={self.pieces}>'
+
+    @property
+    def solved(self) -> bool:
+        """Whether the puzzle is considered solved."""
+        i = 0
+        for row in self.pieces:
+            for piece in row:
+                if piece.index != i:
+                    return False
+
+                i += 1
+        return True
 
     def _join(self, row: List[PuzzlePiece]) -> List[str]:
         """Join together a row of puzzle pieces into a complete list of lines."""
