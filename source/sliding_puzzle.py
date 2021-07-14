@@ -11,7 +11,7 @@ def walk(string: str, step: int) -> str:
 
 @dataclass
 class PiecePosition:
-    """A piece coordinates"""
+    """Position of a piece with its index"""
 
     x: int
     y: int
@@ -37,7 +37,7 @@ class PuzzlePiece:
         self._data = []
 
     def __repr__(self) -> str:
-        return f'<PuzzlePiece index={self.index} width={self.width} height={self.height} empty={self.is_empty}>'
+        return f'<PuzzlePiece index={self.index} width={self.width} height={self.height} empty={self.empty}>'
 
     def __str__(self) -> str:
         return '\n'.join(self.data)
@@ -48,10 +48,10 @@ class PuzzlePiece:
     @property
     def data(self) -> List[str]:
         """List of lines of the image."""
-        return self._data or [" " * self.width] * self.height
+        return self._data or [' ' * self.width] * self.height
 
     @property
-    def is_empty(self) -> bool:
+    def empty(self) -> bool:
         """Whether this piece is empty (not filled)."""
         return bool(self)
 
@@ -127,7 +127,7 @@ class Puzzle:
         return True
 
     def _join(self, row: List[PuzzlePiece]) -> List[str]:
-        """Join together a row of puzzle rows into a complete list of lines."""
+        """Join together a row of puzzle pieces into a complete list of lines."""
         res = []
         for i in range(len(row[0].data)):
             res.append('')
@@ -148,11 +148,9 @@ class Puzzle:
         """Shuffle the puzzle by randomizing the order of the pieces"""
         for row in self.rows:
             random.shuffle(row)
-        puzzle_heigth, puzzle_width = len(self.rows), len(self.rows[0])
+        random.shuffle(self.rows)
         # empty one of the rows
-        x = random.choice(range(puzzle_heigth))
-        y = random.choice(range(puzzle_width))
-        self.rows[x][y].clear()
+        random.choice(random.choice(self.rows)).clear()
 
     def _get_empty_piece_position(self) -> PiecePosition:
         x, y, index = [
@@ -163,10 +161,8 @@ class Puzzle:
         ][0]
         return PiecePosition(x=x, y=y, index=index)
 
-    def move_down(
-        self,
-    ) -> None:
-        """Move the piece above the empty box down"""
+    def move_up(self) -> None:
+        """Move the piece above the empty piece down"""
         empty_pos = self._get_empty_piece_position()
         # return if empty piece is on the first row
         top_row = self.rows[0]
@@ -178,10 +174,8 @@ class Puzzle:
             self.rows[empty_pos.x][empty_pos.y],
         )
 
-    def move_up(
-        self,
-    ) -> None:
-        """Move the piece below the empty box up"""
+    def move_down(self) -> None:
+        """Move the piece below the empty piece up"""
         empty_pos = self._get_empty_piece_position()
         # return if empty piece is on the last row
         last_row = self.rows[-1]
@@ -193,10 +187,8 @@ class Puzzle:
             self.rows[empty_pos.x][empty_pos.y],
         )
 
-    def move_right(
-        self,
-    ) -> None:
-        """Move the piece at the right of the empty box to the left"""
+    def move_right(self) -> None:
+        """Move the piece at the right of the empty piece to the left"""
         empty_pos = self._get_empty_piece_position()
         # return if empty piece is on the last column
         puzzle_width = len(self.rows[0])
@@ -210,10 +202,8 @@ class Puzzle:
             self.rows[empty_pos.x][empty_pos.y],
         )
 
-    def move_left(
-        self,
-    ) -> None:
-        """Move the piece at the left of the empty box to the right"""
+    def move_left(self) -> None:
+        """Move the piece at the left of the empty piece to the right"""
         empty_pos = self._get_empty_piece_position()
         # return if empty piece is on the first column
         first_column = [piece for row in self.rows for j, piece in enumerate(row) if j == 0]
