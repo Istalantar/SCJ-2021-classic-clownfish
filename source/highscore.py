@@ -77,16 +77,3 @@ class Highscore:
 
         except FileNotFoundError:
             pass  # TODO: error handling
-
-
-if __name__ == "__main__":
-    term = Terminal()
-    score = Highscore()
-    score.add('amogus', 'andi', 99, 33)
-    score.add('amogus', 'sven', 999, 3)
-    score.add('amogus', 'kevin', 9, 3)
-    with term.fullscreen(), term.cbreak(), term.hidden_cursor():
-        print(term.move_y(2))
-        for pline in score.display('amogus').split('\n'):
-            print(term.center(pline))  # prints each line seperately, otherwise it will not be centered
-        term.inkey()
