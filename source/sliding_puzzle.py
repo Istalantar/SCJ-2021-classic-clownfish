@@ -157,7 +157,7 @@ class Puzzle:
             (x, y, piece.index)
             for x, row in enumerate(self.rows)
             for y, piece in enumerate(row)
-            if piece._data == []
+            if piece.empty
         ][0]
         return PiecePosition(x=x, y=y, index=index)
 
