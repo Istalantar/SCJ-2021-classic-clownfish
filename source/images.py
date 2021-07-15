@@ -46,7 +46,7 @@ class Image:
         return f'<Image file={self.file} image={self.image}>'
 
     def __str__(self) -> str:
-        return '\n'.join(self.img_to_ascii)
+        return '\n'.join(self.generate_ascii)
 
     def g_scale(self, resolution: int = 0) -> str:
         """
@@ -91,18 +91,18 @@ class Image:
 
         aimg = []
         # generate list of dimensions
-        for j in range(rows):
-            y1 = j * h
-            y2 = (j + 1) * h
-            if j == rows - 1:
+        for i in range(rows):
+            y1 = i * h
+            y2 = (i + 1) * h
+            if i == rows - 1:
                 y2 = vertical
             aimg.append("")
 
-            for i in range(self.cols):
+            for j in range(self.cols):
                 # crop image to tile
-                x1 = int(i * w)
-                x2 = int((i + 1) * w)
-                if i == self.cols - 1:
+                x1 = int(j * w)
+                x2 = int((j + 1) * w)
+                if j == self.cols - 1:
                     x2 = horizontal
 
                 # crop image to extract tile
@@ -112,5 +112,5 @@ class Image:
                 # look up ascii char
                 scale = Image.g_scale(self, resolution=self.shade["resolution"])
                 # append ascii char to string
-                aimg[j] += scale[(avg * (self.shade["length"] - 1)) // 255]
+                aimg[i] += scale[(avg * (self.shade["length"] - 1)) // 255]
         return aimg
