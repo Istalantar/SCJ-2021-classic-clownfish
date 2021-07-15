@@ -121,7 +121,7 @@ class Images:
                 avg = int(Images.get_average(img))
                 # look up ascii char
                 char = Images.g_scale(self, resolution=self.shade["resolution"])[
-                    int((avg * (self.shade["length"] - 1)) / 255)]
+                    (avg * (self.shade["length"] - 1)) // 255]
                 # append ascii char to string
                 aimg[j] += char
 
