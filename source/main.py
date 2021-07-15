@@ -7,69 +7,45 @@ from game import Game
 from highscore import Highscore
 
 SUPPORTED_FILE_TYPES = ('.png', 'jpg')
-INSIDE_THE_BOX = (
-    ' ┌————————————————————————————————————————————————————————————————————————————————————————┐ \n'
-    + ' │                                                                                        │ \n'
-    + ' │         ___ _   _ ____ ___ ____  _____    _____ _   _ _____    ____   _____  __        │ \n'
-    + ' │        |_ _| \\ | / ___|_ _|  _ \\| ____|  |_   _| | | | ____|  | __ ) / _ \\ \\/ /        │ \n'
-    + ' │         | ||  \\| \\___ \\| || | | |  _|      | | | |_| |  _|    |  _ \\| | | \\  /         │ \n'
-    + ' │         | || |\\  |___) | || |_| | |___     | | |  _  | |___   | |_) | |_| /  \\         │ \n'
-    + ' │        |___|_| \\_|____/___|____/|_____|    |_| |_| |_|_____|  |____/ \\___/_/\\_\\        │ \n'
-    + ' │                                                                                        │ \n'
-    + ' │                                                                                        │ \n'
-    + ' └————————————————————————————————————————————————————————————————————————————————————————┘ \n'
-)
-
-term = Terminal()
+INSIDE_THE_BOX = [
+    r'┌────────────────────────────────────────────────────────────────────────────────────────┐',
+    r'│                                                                                        │',
+    r'│         ___ _   _ ____ ___ ____  _____    _____ _   _ _____    ____   _____  __        │',
+    r'│        |_ _| \ | / ___|_ _|  _ \| ____|  |_   _| | | | ____|  | __ ) / _ \ \/ /        │',
+    r'│         | ||  \| \___ \| || | | |  _|      | | | |_| |  _|    |  _ \| | | \  /         │',
+    r'│         | || |\  |___) | || |_| | |___     | | |  _  | |___   | |_) | |_| /  \         │',
+    r'│        |___|_| \_|____/___|____/|_____|    |_| |_| |_|_____|  |____/ \___/_/\_\        │',
+    r'│                                                                                        │',
+    r'│                                                                                        │',
+    r'└────────────────────────────────────────────────────────────────────────────────────────┘',
+]
 
 
 def set_string_length(string: str, length: int) -> str:
-    """Controll the length of any string by either padding with spaces, or cutting off string and ending with ...
-
-    Args:
-        string (str): input string
-        length (int): output length of string
-
-    Returns:
-        str: output string
+    """Controll the length of any string by either padding with spaces,
+    or cutting off string and ending with ...
     """
     if len(string) == length:
         return string
-    if length > len(string):
+    elif len(string) < length:
         return string + ' ' * (length - len(string))
-    if len(string) > length:
+    else:  # len(string) > length
         return string[:length - 3] + '...'
 
 
 def pad_number(num: int, length: int) -> str:
-    """Pad any number with extra 0's at the start. e.g. 3 -> 003
+    """Pad any number with extra 0's at the start. e.g. 3 -> 003"""
+    n = str(num)
+    length = max(length, len(n))
 
-    Args:
-        num (int): input number
-        length (int): new length
-
-    Returns:
-        str: output number as a string
-    """
-    num = str(num)
-    if length < len(num):
-        length = len(num)
-    return '0' * (length - len(num)) + num
+    return n.rjust(length, '0')
 
 
 def render_main(term: Terminal, index: int = 0) -> str:
-    """Render main menu page
-
-    Args:
-        term (Terminal): blessed.Terminal object
-        index (int): menu selection index
-
-    Returns:
-        str: rendered string
-    """
+    """Render main menu page"""
     rendered = ''
 
-    splitted = [term.center(term.black_on_white(line) if index == 0 else line) for line in INSIDE_THE_BOX.split('\n')]
+    splitted = [term.center(term.black_on_white(line) if index == 0 else line) for line in INSIDE_THE_BOX]
     rendered += '\n'.join(splitted) + '\n'
 
     rendered += term.move_y(term.height - 3)
@@ -78,16 +54,13 @@ def render_main(term: Terminal, index: int = 0) -> str:
 
 
 def render_table(term: Terminal, puzzles: List[dict], entries: int, index: int = 0) -> str:
-    """Render table
+    """Render highscore table
 
-    Args:
-        term (Terminal): blessed.Terminal object
-        puzzles (List[dict]): list of puzzles and their highscores
-        entries (int): length of 'puzzles'
-        index (int): currently selected
-
-    Returns:
-        str: rendered string
+    :param term: blessed.Terminal object
+    :param puzzles: List of puzzles and their highscores
+    :param entries: Length of 'puzzles'
+    :param index: Currently selected puzzle
+    :return: Rendered table
     """
     rendered = ''
 
@@ -153,8 +126,7 @@ def select_new_puzzle(term: Terminal, current_dir: str = os.getcwd()) -> str:
     Returns:
         str: image path
     """
-    print(term.clear)
-    print(term.home)
+    print(term.clear + term.home)
 
     dirs = ['    ../']
     files = []
@@ -166,28 +138,25 @@ def select_new_puzzle(term: Terminal, current_dir: str = os.getcwd()) -> str:
             dirs.append('    ' + file + '/')
 
     index = 0
-    while 1:
-        print(term.clear)
-        print(term.home)
-        print(render_file_explorer(term, current_dir, files, dirs, index))
+    while True:
+        print(term.clear + term.home + render_file_explorer(term, current_dir, files, dirs, index))
+
         inp = term.inkey()
         if inp.code == term.KEY_UP:
             index -= 1
-        if inp.code == term.KEY_DOWN:
+        elif inp.code == term.KEY_DOWN:
             index += 1
-        if inp.code == term.KEY_ENTER:
+        elif inp.code == term.KEY_ENTER:
             break
 
-        if index < 0:
-            index = 0
-        if index > len(files) + len(dirs) - 1:
-            index = len(files) + len(dirs) - 1
+        index = max(0, min(index, len(files) + len(dirs) - 1))
 
     if index < len(dirs):
         return select_new_puzzle(term, os.path.abspath(os.path.join(current_dir, dirs[index][4:])))
 
-    path = os.path.abspath(os.path.join(current_dir, files[index - len(dirs) - 1][4:]))
-    return path
+    return os.path.abspath(
+        os.path.join(current_dir, files[index - len(dirs) - 1][4:])
+    )
 
 
 def main(term: Terminal) -> None:
@@ -198,54 +167,49 @@ def main(term: Terminal) -> None:
     """
     index = 0
 
-    while 1:
-        print(term.clear)
-        print(term.home + term.move_y(term.height // 2 - 3))
-        print(render_main(term, index))
+    while True:
+        print(term.clear + term.home + term.move_y(term.height // 2 - 3) + render_main(term, index))
 
         inp = term.inkey()
-        if inp.code == term.KEY_UP or inp.code == term.KEY_DOWN:
+        if inp.code in (term.KEY_UP, term.KEY_DOWN):
             index = int(not index)
-        if inp.code == term.KEY_ENTER:
+        elif inp.code == term.KEY_ENTER:
             if index == 0:
                 break
-            if index == 1:
+            elif index == 1:
                 sys.exit(0)
 
     index = 0
     puzzles = Highscore().highscore
     entries = len(puzzles)
-    while 1:
-        print(term.clear)
-        print(term.home)
-        print(render_table(term, puzzles, entries, index))
+    while True:
+        print(term.clear + term.home + render_table(term, puzzles, entries, index))
 
         inp = term.inkey()
         if inp.code == term.KEY_UP:
             index -= 1
-        if inp.code == term.KEY_DOWN:
+        elif inp.code == term.KEY_DOWN:
             index += 1
-        if inp.code == term.KEY_ENTER:
-            if index == entries:
-                path = select_new_puzzle(term)
-                Game(path)
-            else:
+        elif inp.code == term.KEY_ENTER:
+            if index != entries:
                 break
 
-        if index < 0:
-            index = 0
-        if index > entries:
-            index = entries
+            path = select_new_puzzle(term)
+            Game(path)
 
-    print(term.clear)
-    print(term.home)
-    [print(f'{key}: {puzzles[index][key]}') for key in puzzles[index]]
+        # Clamp index
+        index = max(0, min(index, entries))
 
-    while 1:
+    output = term.clear + term.home
+    '\n'.join(f'{key}: {puzzles[index][key]}' for key in puzzles[index])
+    print(output)
+
+    while True:
         pass
 
 
 if __name__ == '__main__':
+    term = Terminal()
     try:
         with term.fullscreen(), term.cbreak(), term.hidden_cursor():
             main(term)
