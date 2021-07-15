@@ -14,7 +14,7 @@ class Images:
                  shade_str: str = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\()1{}[]?-_+~<>i!lI;:,\"^`'.",
                  shade_min: str = "@#+-."):
         """
-        Initiates the Images class while takes an image file and converts it into an Ascii image
+        Convert an image file into ASCII art.
 
         :param file: The image file path, allows .jpg, .jpeg, .png and other popular file formats
         Ascii related parameters =>
