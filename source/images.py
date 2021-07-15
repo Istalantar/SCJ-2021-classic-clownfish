@@ -1,10 +1,10 @@
 from typing import List
 
 import numpy as np
-from PIL import Image
+import PIL.Image
 
 
-class Images:
+class Image:
     """Class taking care of image conversion and processing."""
 
     def __init__(self, file: str,
@@ -29,7 +29,7 @@ class Images:
         """
         # TODO: error handling when no file is selected
         self.file = file
-        self.image = Image.open(file).convert("L")
+        self.image = PIL.Image.open(file).convert("L")
         self.cols = cols
         self.scale = scale
         self.shade = {
@@ -46,7 +46,7 @@ class Images:
         self.shade["resolution"] = resolution
 
     def __repr__(self) -> str:
-        return f'<Images file={self.file} image={self.image}>'
+        return f'<Image file={self.file} image={self.image}>'
 
     def __str__(self) -> str:
         return '\n'.join(self.img_to_ascii)
@@ -71,8 +71,8 @@ class Images:
             return ret_scale
 
     @staticmethod
-    def get_average(image: Image) -> float:
-        """Given PIL Image, return average value of grayscale value (luminance)"""
+    def get_average(image: PIL.Image) -> float:
+        """Given a PIL Image, return an average value of luminance for the whole image."""
         # get image as numpy array and get the shape, then returns the average
         im = np.array(image)
         w, h = im.shape
@@ -85,13 +85,11 @@ class Images:
 
         :return: A row-wise list of ascii characters forming the output ascii picture
         """
-        # get the dimensions
         horizontal, vertical = self.image.size
+        # compute tile dimensions based on aspect ratio and scale
         w = horizontal / self.cols
-
-        # compute tile height based on aspect ratio and scale
-        h = w / self.scale
-        rows = int(vertical / h)
+        h = int(w / self.scale)
+        rows = vertical // h
 
         # check if image size is too small
         if self.cols > horizontal or rows > vertical:
@@ -102,8 +100,8 @@ class Images:
         aimg = []
         # generate list of dimensions
         for j in range(rows):
-            y1 = int(j * h)
-            y2 = int((j + 1) * h)
+            y1 = j * h
+            y2 = (j + 1) * h
             if j == rows - 1:
                 y2 = vertical
             aimg.append("")
@@ -118,12 +116,14 @@ class Images:
                 # crop image to extract tile
                 img = self.image.crop((x1, y1, x2, y2))
                 # get average luminance
-                avg = int(Images.get_average(img))
+                avg = int(self.get_average(img))
                 # look up ascii char
-                char = Images.g_scale(self, resolution=self.shade["resolution"])[
+                char = Image.g_scale(self, resolution=self.shade["resolution"])[
                     (avg * (self.shade["length"] - 1)) // 255]
                 # append ascii char to string
                 aimg[j] += char
-
-        # return ascii image as a array/string
         return aimg
+
+
+image = Image(file="7d321149b918b1002d6f24d16b5826cd.jpg")
+print(image)
