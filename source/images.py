@@ -72,7 +72,6 @@ class Image:
     @staticmethod
     def get_average(image: PIL.Image) -> float:
         """Given a PIL Image, return an average value of luminance for the whole image."""
-        # get image as numpy array and get the shape, then returns the average
         im = np.array(image)
         w, h = im.shape
         return np.average(im.reshape(w * h))
