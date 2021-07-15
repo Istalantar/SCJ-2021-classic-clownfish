@@ -16,8 +16,7 @@ class Image:
         shade_str: str = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\()1{}[]?-_+~<>i!lI;:,\"^`'.",
         shade_min: str = "@#+-."
     ):
-        """
-        Convert an image file into ASCII art.
+        """Convert an image file into ASCII art.
 
         :param file: The image file path, accepts `.jpg`, `.jpeg`, `.png` or any other image format.
         :param cols: Number of columns in the ascii image, defaults to 80
