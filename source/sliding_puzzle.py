@@ -174,7 +174,7 @@ class Puzzle:
         empty_pos = self._get_empty_piece_position()
         # return if empty piece is on the last row
         last_row_x = len(self.rows[0]) - 1
-        if empty_pos.x == last_row_x:
+        if empty_pos.x == len(self.rows[0]) - 1:
             return
         # swap the empty piece with the target piece
         self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x + 1, y2=empty_pos.y)
