@@ -173,7 +173,6 @@ class Puzzle:
         """Move the piece below the empty piece up"""
         empty_pos = self._get_empty_piece_position()
         # return if empty piece is on the last row
-        last_row_x = len(self.rows[0]) - 1
         if empty_pos.x == len(self.rows[0]) - 1:
             return
         # swap the empty piece with the target piece
@@ -183,8 +182,7 @@ class Puzzle:
         """Move the piece at the right of the empty piece to the left"""
         empty_pos = self._get_empty_piece_position()
         # return if empty piece is on the last column
-        last_column_y = len(self.rows[0]) - 1
-        if empty_pos.y == last_column_y:
+        if empty_pos.y == len(self.rows[0]) - 1:
             return
         self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x, y2=empty_pos.y + 1)
 
