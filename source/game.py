@@ -11,11 +11,7 @@ class Game:
             image (str): image path
             difficulty (int, optional): integer ranging from 1 to 5. Defaults to 1.
         """
-        if difficulty > 5:
-            difficulty = 5
-        if difficulty < 1:
-            difficulty = 1
-
+        difficulty = min(5, max(difficulty, 1))
         # Convert image to ASCII
         # self.ascii = toAscii(image)
         with open('../resources/ascii_art/amogus.txt', 'r') as f:
