@@ -17,7 +17,6 @@ class Image:
         Convert an image file into ASCII art.
 
         :param file: The image file path, accepts `.jpg`, `.jpeg`, `.png` or any other image format.
-        Ascii related parameters =>
         :param cols: Number of columns in the ascii image, defaults to 80
         :param scale: defines the adjusted aspect ratio for the ascii image, defaults to 0.43
         :param resolution: defines resolution, takes in values as percentage of the highest resolution possible with
