@@ -60,12 +60,10 @@ class Image:
         else:
             resolution = resolution * self.shade["str_len"] // 100
             # get evenly spaced indices and return them as a string
-            ret_scale = ""
             indices = np.linspace(0, self.shade["str_len"] - 1, resolution, dtype=int)
             self.shade["length"] = len(indices)
-            for i in indices:
-                ret_scale += self.shade["str"][i]
-            return ret_scale
+
+            return ''.join(self.shade["str"][i] for i in indices)
 
     @staticmethod
     def get_average(image: PIL.Image) -> float:
