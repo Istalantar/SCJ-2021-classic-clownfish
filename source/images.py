@@ -87,9 +87,7 @@ class Image:
 
         # check if image size is too small
         if self.cols > horizontal or rows > vertical:
-            print("Image too small for specified cols!")
-            # TODO: better error handling here
-            exit(0)
+            raise ValueError('Image too small for specified columns')
 
         aimg = []
         # generate list of dimensions
