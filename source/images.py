@@ -7,12 +7,15 @@ import PIL.Image
 class Image:
     """Class taking care of image conversion and processing."""
 
-    def __init__(self, file: str,
-                 cols: int = 80,
-                 scale: float = 0.43,
-                 resolution: int = 0,
-                 shade_str: str = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\()1{}[]?-_+~<>i!lI;:,\"^`'.",
-                 shade_min: str = "@#+-."):
+    def __init__(
+        self,
+        file: str,
+        cols: int = 80,
+        scale: float = 0.43,
+        resolution: int = 0,
+        shade_str: str = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\()1{}[]?-_+~<>i!lI;:,\"^`'.",
+        shade_min: str = "@#+-."
+    ):
         """
         Convert an image file into ASCII art.
 
