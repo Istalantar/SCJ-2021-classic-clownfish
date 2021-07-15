@@ -75,7 +75,7 @@ class Image:
     @property
     def generate_ascii(self) -> List[str]:
         """
-        Converts the PIL Image into a ascii picture
+        Convert the opened image into ASCII art
 
         :return: A row-wise list of ascii characters forming the output ascii picture
         """
