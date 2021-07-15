@@ -73,7 +73,7 @@ class Image:
         return np.average(im.reshape(w * h))
 
     @property
-    def img_to_ascii(self) -> List[str]:
+    def generate_ascii(self) -> List[str]:
         """
         Converts the PIL Image into a ascii picture
 
