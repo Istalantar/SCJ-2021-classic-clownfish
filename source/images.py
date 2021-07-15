@@ -123,7 +123,3 @@ class Image:
                 # append ascii char to string
                 aimg[j] += char
         return aimg
-
-
-image = Image(file="7d321149b918b1002d6f24d16b5826cd.jpg")
-print(image)
