@@ -42,7 +42,7 @@ class Images:
         }
 
         # ensure level is [0-100]
-        resolution = 100 if resolution > 100 else 0 if resolution < 0 else resolution
+        resolution = max(0, min(resolution, 100))
         self.shade["resolution"] = resolution
 
     def __repr__(self) -> str:
