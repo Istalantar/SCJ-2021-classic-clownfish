@@ -110,8 +110,7 @@ class Image:
                 # get average luminance
                 avg = int(self.get_average(img))
                 # look up ascii char
-                char = Image.g_scale(self, resolution=self.shade["resolution"])[
-                    (avg * (self.shade["length"] - 1)) // 255]
+                scale = Image.g_scale(self, resolution=self.shade["resolution"])
                 # append ascii char to string
-                aimg[j] += char
+                aimg[j] += scale[(avg * (self.shade["length"] - 1)) // 255]
         return aimg
