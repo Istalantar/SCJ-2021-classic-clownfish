@@ -149,7 +149,7 @@ class Puzzle:
         for row in self.rows:
             random.shuffle(row)
         random.shuffle(self.rows)
-        # empty one of the rows
+        # Clear a random piece
         random.choice(random.choice(self.rows)).clear()
 
     def _get_empty_piece_position(self) -> PiecePosition:
