@@ -117,3 +117,4 @@ class Images:
 
         # return ascii image as a array/string
         return aimg
+    
