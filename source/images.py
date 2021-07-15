@@ -5,7 +5,7 @@ from PIL import Image
 
 
 class Images:
-    """Module to handle image conversion and processing"""
+    """Class taking care of image conversion and processing."""
 
     def __init__(self, file: str,
                  cols: int = 80,
