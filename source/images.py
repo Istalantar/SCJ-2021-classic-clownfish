@@ -1,8 +1,11 @@
 import numpy as np
+from typing import List
 from PIL import Image
 
 
 class Images:
+    """Module to handle image conversion and processing"""
+
     def __init__(self, file: str,
                  cols: int = 80,
                  scale: float = 0.43,
@@ -11,6 +14,7 @@ class Images:
                  shade_min: str = "@#+-."):
         """
         Initiates the Images class while takes an image file and converts it into an Ascii image
+
         :param file: The image file path, allows .jpg, .jpeg, .png and other popular file formats
         Ascii related parameters =>
         :param cols: Number of columns in the ascii image, defaults to 80
@@ -49,6 +53,7 @@ class Images:
     def g_scale(self, resolution: int = 0) -> str:
         """
         Helper function to determine the character set based on the resolution
+
         :return: a string of characters which corresponds to the luminance in descending order
         """
         if resolution == 0:
@@ -65,7 +70,7 @@ class Images:
             return ret_scale
 
     @staticmethod
-    def get_average(image) -> float:
+    def get_average(image: Image) -> float:
         """Given PIL Image, return average value of grayscale value (luminance)"""
         # get image as numpy array and get the shape, then returns the average
         im = np.array(image)
@@ -73,8 +78,12 @@ class Images:
         return np.average(im.reshape(w * h))
 
     @property
-    def img_to_ascii(self) -> str:
+    def img_to_ascii(self) -> List[str]:
+        """
+        Converts the PIL Image into a ascii picture
 
+        :return: A row-wise list of ascii characters forming the output ascii picture
+        """
         # get the dimensions
         horizontal, vertical = self.image.size
         w = horizontal / self.cols
@@ -117,4 +126,3 @@ class Images:
 
         # return ascii image as a array/string
         return aimg
-    
