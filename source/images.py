@@ -40,12 +40,8 @@ class Image:
             "min": shade_min,
             "min_len": len(shade_min),
             "length": 0,
-            "resolution": 0
+            "resolution": max(0, min(resolution, 100))  # Clamp resolution
         }
-
-        # ensure level is [0-100]
-        resolution = max(0, min(resolution, 100))
-        self.shade["resolution"] = resolution
 
     def __repr__(self) -> str:
         return f'<Image file={self.file} image={self.image}>'
