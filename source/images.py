@@ -77,7 +77,7 @@ class Image:
         """
         Convert the opened image into ASCII art
 
-        :return: A row-wise list of ascii characters forming the output ascii picture
+        :return: A list of strings each representing a row of the image.
         """
         horizontal, vertical = self.image.size
         # compute tile dimensions based on aspect ratio and scale
