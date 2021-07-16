@@ -81,7 +81,7 @@ class Image:
         """
         horizontal, vertical = self.image.size
         # compute tile dimensions based on aspect ratio and scale
-        w = horizontal / self.cols
+        w = horizontal // self.cols
         h = int(w / self.scale)
         rows = vertical // h
 
