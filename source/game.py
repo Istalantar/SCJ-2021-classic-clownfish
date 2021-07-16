@@ -34,9 +34,12 @@ class Game(Menu):
             rendered += term.center(line)
 
         rendered += term.move_down(2)
-        rendered += term.center('Use the arrow keys to move the pieces')
-        rendered += term.center('Hit TAB + Enter to go back to the start menu')
-        rendered += ' ' * 4 + (term.black_on_white('Exit') if self.selected == 1 else 'Exit')
+        if self.selected != 3:  # image is not finished
+            rendered += term.center('Use the arrow keys to move the pieces')
+            rendered += term.center('Hit TAB + Enter to go back to the start menu')
+        else:  # image is finished
+            rendered += term.center(term.red_on_black('Congratulations, you completed the puzzle'))
+        rendered += term.move_x(4) + (term.black_on_white('Exit') if self.selected == 1 else 'Exit')
 
         return rendered
 
@@ -54,6 +57,9 @@ class Game(Menu):
             self.selected = int(not self.selected)
         else:
             print('you hit an unsupported key')
+
+        if self.puzzle.solved:
+            self.selected = 3
 
     def click(self, term: Terminal) -> State:
         """Handle a enter-press."""
