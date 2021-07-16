@@ -223,4 +223,3 @@ class Puzzle:
 
     def _swap_pieces(self, x1: int, y1: int, x2: int, y2: int) -> None:
         self.rows[y1][x1], self.rows[y2][x2] = self.rows[y2][x2], self.rows[y1][x1]
-
