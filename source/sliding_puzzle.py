@@ -86,17 +86,15 @@ class Puzzle:
 
     __slots__ = ('rows',)
 
-    def __init__(self, image: str, horizontal: int, vertical: int) -> None:
+    def __init__(self, image: List[str], horizontal: int, vertical: int) -> None:
         """Initialize the Puzzle with an image and size to split it by.
 
-        :param image: An ASCII string that will be split
+        :param image: A list of ASCII string rows
         :param horizontal: Amount of horizontal rows
         :param vertical: Amount of vertical rows
         """
-        data = image.split('\n')
-
-        length = len(data[0])
-        for line in data:
+        length = len(image[0])
+        for line in image:
             if length != len(line):  # Make sure that all strings are equal in length
                 raise ValueError('Image is not a complete rectangle, make sure it is correctly padded.')
 
@@ -156,7 +154,7 @@ class Puzzle:
             ] for v in range(vertical)
         ]
 
-        for i, line in enumerate(data):
+        for i, line in enumerate(image):
             for j, column in enumerate(walk(line, width)):
                 rows[i//height][j].append(column)
 
