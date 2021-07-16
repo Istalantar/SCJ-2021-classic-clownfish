@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Union
 from blessed import Terminal as Interface
 from game import Game
 
-from .utils import Menu, State
+from .utils import Menu
 
 if TYPE_CHECKING:
     # Interface is a subclass of Terminal, importing it directly would cause circular imports
@@ -63,17 +63,15 @@ class ChooseFile(Menu):
 
         self.selected = max(0, min(self.selected, len(self.dirs) + len(self.files) - 1))
 
-    def click(self, term: Interface) -> State:
+    def click(self, term: Interface) -> Menu:
         """Handle a enter press, updating currently viewed files or changing state."""
         if self.selected < len(self.dirs):  # If it is a folder that is selected (they always come first)
             self.init_files(os.path.abspath(os.path.join(self.current_dir, self.dirs[self.selected])))
-            return State.file_explorer  # Don't change state
+            return self  # Don't change state
 
-        term.menus[State.playing] = Game(
+        return Game(
             os.path.abspath(
                 # The subtraction is to accomodate for directories being selected
                 os.path.join(self.current_dir, self.files[self.selected - len(self.dirs) - 1])
             )
         )
-
-        return State.playing

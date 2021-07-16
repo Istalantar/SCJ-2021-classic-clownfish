@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING, Union
 from blessed import Terminal as Interface
 from highscore import Highscore
 
-from .utils import Menu, State, set_string_length
+from .choose_file import ChooseFile
+from .utils import Menu, set_string_length
 
 if TYPE_CHECKING:
     # Interface is a subclass of Terminal, importing it directly would cause circular imports
@@ -41,12 +42,12 @@ class HighScoreMenu(Menu):
         rendered += ' ' * 4 + (term.black_on_white('Add new') if self.selected == len(self.puzzles) else 'Add new')
         return rendered
 
-    def click(self, term: Interface) -> State:
+    def click(self, term: Interface) -> Menu:
         """Handle enter key presses, changing state to file_explorer if the Add new button is selected."""
         if self.selected != len(self.puzzles):
-            return State.highscore  # Don't change menu
+            return self  # Don't change menu
 
-        return State.file_explorer
+        return ChooseFile()
 
     def kinput(self, term: Interface, key: Union[int, None]) -> None:
         """Handle arrow key input, changing the selected button."""

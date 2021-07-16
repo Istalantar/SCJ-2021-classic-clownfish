@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING, Union
 
 from blessed import Terminal as Interface
 
-from .utils import Menu, State
+from .highscore_menu import HighScoreMenu
+from .utils import Menu
 
 if TYPE_CHECKING:
     # Interface is a subclass of Terminal, importing it directly would cause circular imports
@@ -45,9 +46,9 @@ class StartMenu(Menu):
         if key in (term.KEY_UP, term.KEY_DOWN):
             self.selected = int(not self.selected)
 
-    def click(self, term: Interface) -> State:
+    def click(self, term: Interface) -> Menu:
         """Handle a enter-press."""
         if self.selected == 0:
-            return State.highscore
+            return HighScoreMenu()
         else:
             sys.exit(0)
