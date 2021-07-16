@@ -28,16 +28,10 @@ class Image:
         :param shade_str: defaults to a well known pattern of 69 characters used to define the greyscale
         :param shade_min: defaults to a minimalistic pattern of 5 characters used to define the greyscale
         """
-        # TODO: error handling when no file is selected
         self.file = file
-        try:
-            self.image = PIL.Image.open(file).convert("L")
-        except FileNotFoundError as e:
-            print("File Not Found =>", e)
-        except PIL.UnidentifiedImageError as e:
-            print("Unsupported File Format =>", e)
+        self.image = PIL.Image.open(file).convert("L")
         if not (cols and scale):
-            print("Columns and Scale value can not be 0")
+            raise ValueError("Columns and Scale value can not be 0")
         else:
             self.cols = cols
             self.scale = scale
