@@ -9,6 +9,21 @@ def walk(string: str, step: int) -> str:
         yield string[i:i+step]
 
 
+def join(row: List[List[str]]) -> List[str]:
+    """Join together a row of puzzle pieces into a complete list of lines"""
+    res = []
+    for i in range(len(row[0])):
+        res.append('│')
+        for piece in row:
+            res[i] += piece[i]
+    return res
+
+
+def bordered(lines: List[str]) -> List[str]:
+    """Put a border after every line"""
+    return [line + '│' for line in lines]
+
+
 @dataclass
 class PiecePosition:
     """Position of a piece with its index"""
@@ -126,47 +141,34 @@ class Puzzle:
                 i += 1
         return True
 
+    def build_border(self, puzzle: int, piece: int, *, start: str, middle: str, end: str) -> str:
+        res = start + '─' * puzzle + end
+        border_count = 1
+        for i in range(piece, (puzzle - piece)):
+            if i % piece == 0:
+                pos = i + border_count
+                res = res[:pos] + middle + res[pos + 1:]
+                border_count += 1
+        return res
+
     def draw(self) -> str:
         """Draw the puzzle in its current state."""
         nbr_separators = len(self.rows) - 1
         piece_width = self.rows[0][0].width
         puzzle_width = piece_width * len(self.rows[0]) + nbr_separators
 
-        def build_border(start: str, middle: str, end: str) -> str:
-            res = start + '─' * puzzle_width + end
-            border_count = 1
-            for i in range(piece_width, (puzzle_width - piece_width)):
-                if i % piece_width == 0:
-                    pos = i + border_count
-                    res = res[:pos] + middle + res[pos + 1:]
-                    border_count += 1
-            return res
-
-        def _join(row: List[List[str]]) -> List[str]:
-            """Join together a row of puzzle pieces into a complete list of lines"""
-            res = []
-            for i in range(len(row[0])):
-                res.append('│')
-                for piece in row:
-                    res[i] += piece[i]
-            return res
-
-        def bordered(lines: List[str]) -> List[str]:
-            """Put a border after every line"""
-            return [line + '│' for line in lines]
-
         # build the top border
-        output = [build_border(start='┌', middle='┬', end='┐')]
+        output = [self.build_border(puzzle_width, piece_width, start='┌', middle='┬', end='┐')]
 
         # build content
         for index, row in enumerate(self.rows):
             row = [bordered(piece.data) for piece in row]
-            output.extend(_join(row))
+            output.extend(join(row))
             if index < len(self.rows) - 1:
-                output.extend([build_border(start="├", middle="┼", end="┤")])
+                output.extend([self.build_border(puzzle_width, piece_width, start="├", middle="┼", end="┤")])
 
         # add bottom border
-        output += [build_border(start='└', middle="┴", end='┘')]
+        output += [self.build_border(puzzle_width, piece_width, start='└', middle="┴", end='┘')]
 
         return '\n'.join(output)
 
