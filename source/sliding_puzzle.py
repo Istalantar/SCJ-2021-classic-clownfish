@@ -142,6 +142,7 @@ class Puzzle:
         return True
 
     def build_border(self, puzzle: int, piece: int, *, start: str, middle: str, end: str) -> str:
+        """Build puzzle border line."""
         res = start + '─' * puzzle + end
         border_count = 1
         for i in range(piece, (puzzle - piece)):
