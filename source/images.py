@@ -30,9 +30,17 @@ class Image:
         """
         # TODO: error handling when no file is selected
         self.file = file
-        self.image = PIL.Image.open(file).convert("L")
-        self.cols = cols
-        self.scale = scale
+        try:
+            self.image = PIL.Image.open(file).convert("L")
+        except FileNotFoundError as e:
+            print("File Not Found =>", e)
+        except PIL.UnidentifiedImageError as e:
+            print("Unsupported File Format =>", e)
+        if not (cols and scale):
+            print("Columns and Scale value can not be 0")
+        else:
+            self.cols = cols
+            self.scale = scale
         self.shade = {
             "str": shade_str,
             "str_len": len(shade_str),
@@ -79,38 +87,37 @@ class Image:
 
         :return: A list of strings each representing a row of the image.
         """
+        # check for required arguments
+        try:
+            self.image, self.cols, self.scale
+        except AttributeError:
+            return [""]
         horizontal, vertical = self.image.size
+        self.cols = min(self.cols, horizontal)  # clamps the number of cols
         # compute tile dimensions based on aspect ratio and scale
         w = horizontal // self.cols
         h = int(w / self.scale)
         rows = vertical // h
-
-        # check if image size is too small
-        if self.cols > horizontal or rows > vertical:
-            raise ValueError('Image too small for specified columns')
+        rows = min(rows, vertical)  # clamps the number of rows
 
         aimg = []
         # generate list of dimensions
         for i in range(rows):
             y1 = i * h
             y2 = (i + 1) * h
-            if i == rows - 1:
-                y2 = vertical
             aimg.append("")
 
             for j in range(self.cols):
                 # crop image to tile
                 x1 = int(j * w)
                 x2 = int((j + 1) * w)
-                if j == self.cols - 1:
-                    x2 = horizontal
 
                 # crop image to extract tile
                 img = self.image.crop((x1, y1, x2, y2))
                 # get average luminance
                 avg = int(self.get_average(img))
                 # look up ascii char
-                scale = Image.g_scale(self, resolution=self.shade["resolution"])
+                scale = self.g_scale(resolution=self.shade["resolution"])
                 # append ascii char to string
                 aimg[i] += scale[(avg * (self.shade["length"] - 1)) // 255]
 
