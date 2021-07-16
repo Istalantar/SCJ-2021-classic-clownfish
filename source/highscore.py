@@ -1,7 +1,6 @@
 import os
 from operator import itemgetter
 
-from blessed import Terminal
 from table import make_table
 
 
