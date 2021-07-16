@@ -155,8 +155,8 @@ class Puzzle:
     def _get_empty_piece_position(self) -> PiecePosition:
         x, y, index = [
             (x, y, piece.index)
-            for x, row in enumerate(self.rows)
-            for y, piece in enumerate(row)
+            for y, row in enumerate(self.rows)
+            for x, piece in enumerate(row)
             if piece.empty
         ][0]
         return PiecePosition(x=x, y=y, index=index)
@@ -167,7 +167,7 @@ class Puzzle:
         # return if empty piece is on the first row
         if empty_pos.y == 0:
             return
-        self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x - 1, y2=empty_pos.y)
+        self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x, y2=empty_pos.y - 1)
 
     def move_down(self) -> None:
         """Move the piece below the empty piece up"""
@@ -176,7 +176,7 @@ class Puzzle:
         if empty_pos.y == len(self.rows) - 1:
             return
         # swap the empty piece with the target piece
-        self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x + 1, y2=empty_pos.y)
+        self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x, y2=empty_pos.y + 1)
 
     def move_right(self) -> None:
         """Move the piece at the right of the empty piece to the left"""
@@ -184,7 +184,7 @@ class Puzzle:
         # return if empty piece is on the last column
         if empty_pos.x == len(self.rows[0]) - 1:
             return
-        self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x, y2=empty_pos.y + 1)
+        self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x + 1, y2=empty_pos.y)
 
     def move_left(self) -> None:
         """Move the piece at the left of the empty piece to the right"""
@@ -193,7 +193,7 @@ class Puzzle:
         if empty_pos.x == 0:
             return
         # swap the empty piece with the target piece
-        self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x, y2=empty_pos.y - 1)
+        self._swap_pieces(x1=empty_pos.x, y1=empty_pos.y, x2=empty_pos.x - 1, y2=empty_pos.y)
 
     def _swap_pieces(self, x1: int, y1: int, x2: int, y2: int) -> None:
-        self.rows[x1][y1], self.rows[x2][y2] = self.rows[x2][y2], self.rows[x1][y1]
+        self.rows[y1][x1], self.rows[y2][x2] = self.rows[y2][x2], self.rows[y1][x1]
