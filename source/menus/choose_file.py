@@ -73,6 +73,6 @@ class ChooseFile(Menu):
         return Game(
             os.path.abspath(
                 # The subtraction is to accomodate for directories being selected
-                os.path.join(self.current_dir, self.files[self.selected - len(self.dirs) - 1])
+                os.path.join(self.current_dir, self.files[self.selected - len(self.dirs)])
             )
         )
