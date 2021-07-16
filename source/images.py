@@ -81,11 +81,6 @@ class Image:
 
         :return: A list of strings each representing a row of the image.
         """
-        # check for required arguments
-        try:
-            self.image, self.cols, self.scale
-        except AttributeError:
-            return [""]
         horizontal, vertical = self.image.size
         self.cols = min(self.cols, horizontal)  # clamps the number of cols
         # compute tile dimensions based on aspect ratio and scale
@@ -116,3 +111,7 @@ class Image:
                 aimg[i] += scale[(avg * (self.shade["length"] - 1)) // 255]
 
         return aimg
+
+
+mess = Image(file="7d321149b918b1002d6f24d16b5826cd.jpg")
+print(mess)
