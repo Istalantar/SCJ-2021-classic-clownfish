@@ -113,4 +113,5 @@ class Image:
                 scale = Image.g_scale(self, resolution=self.shade["resolution"])
                 # append ascii char to string
                 aimg[i] += scale[(avg * (self.shade["length"] - 1)) // 255]
+
         return aimg
