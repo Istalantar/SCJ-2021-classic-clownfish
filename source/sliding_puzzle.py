@@ -1,3 +1,4 @@
+import datetime
 import random
 from dataclasses import dataclass
 from typing import List
@@ -84,8 +85,6 @@ class Puzzle:
 
     rows: List[List[PuzzlePiece]]
 
-    __slots__ = ('rows',)
-
     def __init__(self, image: List[str], horizontal: int, vertical: int) -> None:
         """Initialize the Puzzle with an image and size to split it by.
 
@@ -93,6 +92,10 @@ class Puzzle:
         :param horizontal: Amount of horizontal rows
         :param vertical: Amount of vertical rows
         """
+        self.moves_done = 0
+        self.start_time = datetime.datetime.now()
+        self.time_needed = 0
+
         length = len(image[0])
         for line in image:
             if length != len(line):  # Make sure that all strings are equal in length
@@ -131,6 +134,7 @@ class Puzzle:
     def solved(self) -> bool:
         """Whether the puzzle is considered solved."""
         i = 0
+        self.time_needed = (datetime.datetime.now() - self.start_time).seconds  # updates time elapsed
         for row in self.rows:
             for piece in row:
                 if piece.index != i:
@@ -224,3 +228,4 @@ class Puzzle:
 
     def _swap_pieces(self, x1: int, y1: int, x2: int, y2: int) -> None:
         self.rows[y1][x1], self.rows[y2][x2] = self.rows[y2][x2], self.rows[y1][x1]
+        self.moves_done += 1
