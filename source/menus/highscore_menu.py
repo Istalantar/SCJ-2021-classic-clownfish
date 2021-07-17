@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from blessed import Terminal as Interface
+from blessed.keyboard import Keystroke
 from highscore import Highscore
 
 from .choose_file import ChooseFile
@@ -49,11 +50,11 @@ class HighScoreMenu(Menu):
 
         return ChooseFile()
 
-    def kinput(self, term: Interface, key: Union[int, None]) -> None:
+    def kinput(self, term: Interface, key: Keystroke) -> None:
         """Handle arrow key input, changing the selected button."""
-        if key == term.KEY_UP:
+        if key.code == term.KEY_UP:
             self.selected -= 1
-        elif key == term.KEY_DOWN:
+        elif key.code == term.KEY_DOWN:
             self.selected += 1
 
         # Clamp the value

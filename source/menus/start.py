@@ -1,7 +1,8 @@
 import sys
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from blessed import Terminal as Interface
+from blessed.keyboard import Keystroke
 
 from .highscore_menu import HighScoreMenu
 from .utils import Menu
@@ -41,9 +42,9 @@ class StartMenu(Menu):
         rendered += ' ' * 4 + (term.black_on_white('Exit') if self.selected == 1 else 'Exit')
         return rendered
 
-    def kinput(self, term: Interface, key: Union[int, None]) -> None:
+    def kinput(self, term: Interface, key: Keystroke) -> None:
         """Handle keyboard input (what button is selected)."""
-        if key in (term.KEY_UP, term.KEY_DOWN):
+        if key.code in (term.KEY_UP, term.KEY_DOWN):
             self.selected = int(not self.selected)
 
     def click(self, term: Interface) -> Menu:

@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING, Callable, Protocol, Union
+from typing import TYPE_CHECKING, Protocol
 
 from blessed import Terminal as Interface
+from blessed.keyboard import Keystroke
 
 if TYPE_CHECKING:
     # Interface is a subclass of Terminal, importing it directly would cause circular imports
@@ -18,8 +19,8 @@ class Menu(Protocol):
         """Render the menu, this method should return a string that will be printed."""
         ...
 
-    def kinput(self, term: Interface, key: Union[int, None]) -> None:
-        """Handle any keyboard input however the menu see fit."""
+    def kinput(self, term: Interface, key: Keystroke) -> None:
+        """Handle any keyboard input however the menu see fit.."""
         ...
 
     def click(self, term: Interface) -> 'Menu':  # Forward reference

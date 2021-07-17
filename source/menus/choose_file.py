@@ -1,7 +1,8 @@
 import os
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from blessed import Terminal as Interface
+from blessed.keyboard import Keystroke
 from game import Game
 
 from .utils import Menu
@@ -54,11 +55,11 @@ class ChooseFile(Menu):
 
         return '\n'.join(rendered)
 
-    def kinput(self, term: Interface, key: Union[int, None]) -> None:
+    def kinput(self, term: Interface, key: Keystroke) -> None:
         """Handle keyboard input for changing which button is selected."""
-        if key == term.KEY_UP:
+        if key.code == term.KEY_UP:
             self.selected -= 1
-        elif key == term.KEY_DOWN:
+        elif key.code == term.KEY_DOWN:
             self.selected += 1
 
         self.selected = max(0, min(self.selected, len(self.dirs) + len(self.files) - 1))
