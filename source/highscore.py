@@ -1,5 +1,6 @@
 import os
 from operator import itemgetter
+from typing import Dict, List, Union
 
 from table import make_table
 
@@ -8,9 +9,12 @@ class Highscore:
     """Highscore Class"""
 
     filename = os.path.dirname(__file__) + '/../resources/highscore.csv'
-    highscore = []  # List of Dictionary entries with following keys: 'Puzzle', 'Name', 'Time', 'Moves'
+
+    # List of Dictionary entries with following keys: 'Puzzle', 'Name', 'Time', 'Moves'
+    highscore: List[Dict[str, Union[str, int]]]
 
     def __init__(self):
+        self.highscore = []
         self.__read()
 
     def add(self, image: str, player_name: str, time: int, moves: int) -> None:
@@ -61,7 +65,7 @@ class Highscore:
             with open(self.filename, mode='a') as file:
                 values = list(dict(self.highscore[-1]).values())
                 values = [str(value) for value in values]
-                file.write(','.join(values))
+                file.write(','.join(values) + '\n')
         except FileNotFoundError:
             pass  # TODO: error handling
 
