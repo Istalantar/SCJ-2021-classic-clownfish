@@ -32,12 +32,14 @@ class Game(Menu):
         """Render the game-menu."""
         # displayed content regardless of 'selected'
         rendered = term.move_y(3)  # just a spacing
+
         rendered += term.center(
             f'Moves: {self.puzzle.moves_done}' + term.move_right(4) + f'Time {self.puzzle.time_needed}'
         )
         rendered += term.move_down(1)
 
         for line in self.puzzle.draw(term).split('\n'):
+
             rendered += term.center(line)
 
         rendered += term.move_down(2)
