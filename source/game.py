@@ -26,7 +26,11 @@ class Game(Menu):
 
     def render(self, term: Terminal) -> str:
         """Render the game-menu."""
-        rendered = term.move_y(4)  # just a spacing of four
+        rendered = term.move_y(3)  # just a spacing of four
+        rendered += term.center(f'Moves: {self.puzzle.moves_done}' + term.move_right(4)
+                                + f'Time {self.puzzle.time_needed}')
+
+        rendered += term.move_down
 
         lines = self.puzzle.draw().split('\n')
 
@@ -58,7 +62,8 @@ class Game(Menu):
         else:
             print('you hit an unsupported key')
 
-        if self.puzzle.solved:
+        if self.puzzle.solved:  # Check if puzzle is solve, which also updates time elapsed
+            # TODO: implement timeout for key input (time will only update, if key is hit)
             self.selected = 3
 
     def click(self, term: Terminal) -> State:
