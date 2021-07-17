@@ -174,15 +174,7 @@ class Puzzle:
 
         return '\n'.join(output)
 
-    def shuffle(self) -> None:
-        """Shuffle the puzzle by randomizing the order of the pieces"""
-        for row in self.rows:
-            random.shuffle(row)
-        random.shuffle(self.rows)
-        # Clear a random piece
-        random.choice(random.choice(self.rows)).clear()
-
-    def shuffle2(self, difficulty: int = 50) -> None:
+    def shuffle(self, difficulty: int = 50) -> None:
         """Shuffle the puzzle by randomizing the order of the pieces
 
         :param difficulty: approx. maximum number of iterations
