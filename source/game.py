@@ -57,7 +57,7 @@ class Game(Menu):
 
         return rendered
 
-    def kinput(self, term: Terminal, key: Keystroke) -> None:
+    def kinput(self, term: Interface, key: Keystroke) -> None:
         """Handle keyboard input (what button is selected)."""
         if self.selected == 0:  # input for puzzle mode
             if key.code == term.KEY_UP:
