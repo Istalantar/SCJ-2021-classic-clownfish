@@ -3,6 +3,8 @@ import random
 from dataclasses import dataclass
 from typing import List
 
+from main import Interface
+
 
 def walk(string: str, step: int) -> str:
     """Helper generator to iterate over a string with steps"""
@@ -38,13 +40,16 @@ class PuzzlePiece:
     """Piece of a bigger puzzle."""
 
     index: int
+    empty: bool
 
     width: int
     height: int
 
-    __slots__ = ('index', 'width', 'height', '_data')
+    __slots__ = ('index', 'empty', 'width', 'height', '_data')
 
     def __init__(self, index: int, width: int, height: int) -> None:
+        self.empty = False
+
         self.index = index
 
         self.width = width
@@ -55,21 +60,15 @@ class PuzzlePiece:
     def __repr__(self) -> str:
         return f'<PuzzlePiece index={self.index} width={self.width} height={self.height} empty={self.empty}>'
 
-    def __str__(self) -> str:
-        return '\n'.join(self.data)
-
     def __bool__(self) -> bool:
         return bool(self._data)
 
-    @property
-    def data(self) -> List[str]:
+    def get_data(self, term: Interface, *, solved: bool = False) -> List[str]:
         """List of lines of the image."""
-        return self._data or [' ' * self.width] * self.height
-
-    @property
-    def empty(self) -> bool:
-        """Whether this piece is empty (not filled)."""
-        return not bool(self)
+        if self.empty and solved:
+            return [term.webgray_on_black(line) for line in self._data]
+        else:
+            return [' ' * self.width] * self.height if self.empty else self._data
 
     def append(self, string: str) -> None:
         """Append a string to the end of the data list."""
@@ -77,7 +76,7 @@ class PuzzlePiece:
 
     def clear(self) -> None:
         """Clear the piece data"""
-        self._data = list()
+        self.empty = True
 
 
 class Puzzle:
@@ -191,7 +190,7 @@ class Puzzle:
                 border_count += 1
         return res
 
-    def draw(self) -> str:
+    def draw(self, term: Interface) -> str:
         """Draw the puzzle in its current state."""
         nbr_separators = len(self.rows) - 1
         piece_width = self.rows[0][0].width
@@ -202,7 +201,7 @@ class Puzzle:
 
         # build content
         for index, row in enumerate(self.rows):
-            row = [bordered(piece.data) for piece in row]
+            row = [bordered(piece.get_data(term, solved=self.solved)) for piece in row]
             output.extend(join(row))
             if index < len(self.rows) - 1:
                 output.extend([self.build_border(puzzle_width, piece_width, start="├", middle="┼", end="┤")])
