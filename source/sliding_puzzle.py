@@ -101,14 +101,43 @@ class Puzzle:
                 raise ValueError('Image is not a complete rectangle, make sure it is correctly padded.')
 
         # How many characters one piece is
-        width = len(image[0]) / horizontal
-        height = len(image) / vertical
+        width = round(len(image[0]) / horizontal)
+        height = round(len(image) / vertical)
 
-        # We cannot handle decimals
-        if not width.is_integer():
-            raise ValueError(f'Image cannot be evenly split by width: {len(image[0])} / {horizontal}')
-        elif not height.is_integer():
-            raise ValueError(f'Image cannot be evenly split by height: {len(image)} / {vertical}')
+        if width * horizontal < len(image[0]):
+            print('too small')
+            diff = len(image[0]) - width * horizontal
+            num = diff // 2
+            for i, line in enumerate(image):
+                image[i] = line[num:((diff - num) * -1)]
+        elif width * horizontal > len(image[0]):
+            print('too big')
+            diff = width * horizontal - len(image[0])
+            num = diff // 2
+            for i, line in enumerate(image):
+                image[i] = '-' * num + line + '-' * (diff - num)
+
+        if width * horizontal != len(image[0]):
+            raise RuntimeError('BAD')
+
+        if height * vertical > len(image):
+            diff = height * vertical - len(image)
+            num = diff // 2
+            for _ in range(num):
+                image.insert(0, '-' * len(image[0]))
+            for _ in range(diff - num):
+                image.append('-' * len(image[0]))
+
+        elif height * vertical < len(image):
+            diff = len(image) - height * vertical
+            num = diff // 2
+            for _ in range(num):
+                image.pop(0)
+            for _ in range(diff - num):
+                image.pop(-1)
+
+        if height * vertical != len(image):
+            raise RuntimeError('BAD height')
 
         # Even though width and height have no decimals, they are still floats
         width, height = int(width), int(height)
@@ -184,6 +213,7 @@ class Puzzle:
         clear_id = self._get_empty_piece_position()
         clear_id = [clear_id.x, clear_id.y]
         hash_list = [[v * self.dim[0] + i for i in range(self.dim[0])] for v in range(self.dim[1])]
+        print(hash_list)
         iters = random.randint(difficulty//2, difficulty)
 
         for i in range(iters):
@@ -200,6 +230,7 @@ class Puzzle:
             hash_list[index[1]][index[0]], hash_list[clear_id[1]][clear_id[0]] \
                 = hash_list[clear_id[1]][clear_id[0]], hash_list[index[1]][index[0]]
             clear_id = index
+            print(hash_list)
         for v, row in enumerate(self.rows):
             for h, piece in enumerate(row):
                 index = hash_list[v][h]
