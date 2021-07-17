@@ -101,17 +101,53 @@ class Puzzle:
                 raise ValueError('Image is not a complete rectangle, make sure it is correctly padded.')
 
         # How many characters one piece is
-        width = len(data[0]) / horizontal
-        height = len(data) / vertical
+        width = round(len(data[0]) / horizontal)
+        height = round(len(data) / vertical)
 
-        # We cannot handle decimals
-        if not width.is_integer():
-            raise ValueError(f'Image cannot be evenly split by width: {len(data[0])} / {horizontal}')
-        elif not height.is_integer():
-            raise ValueError(f'Image cannot be evenly split by height: {len(data)} / {vertical}')
+        wlen = len(data[0])
+        hlen = len(data)
 
-        # Even though width and height have no decimals, they are still floats
-        width, height = int(width), int(height)
+        # If the width was rounded down
+        if width * horizontal < wlen:
+            diff = wlen - width * horizontal
+            half = diff // 2  # Cut decimals
+            # half + half may not be equal to diff because of decimals
+            other = diff - half
+            for i, line in enumerate(data):
+                # Crop parts of each line
+                data[i] = line[half:other * -1]
+
+        # If the width was rounded up
+        elif width * horizontal > wlen:
+            diff = width * horizontal - wlen
+            half = diff // 2
+            # See above
+            other = diff - half
+            for i, line in enumerate(data):
+                # Add padding (copying the last few characters)
+                data[i] = (line[0] * half) + line + (line[-1] * other)
+
+        # If the height was rounded down
+        if height * vertical < hlen:
+            diff = hlen - height * vertical
+            half = diff // 2
+            other = diff - half
+            # Cut parts of the image
+            data = data[half:other * -1]
+
+        # If the height was rounded up
+        elif height * vertical > hlen:
+            diff = height * vertical - hlen
+            half = diff // 2
+            other = diff - half
+
+            # Insert copies of the first line
+            for _ in range(half):
+                data.insert(0, data[0])
+
+            # Append copies of the last line
+            for _ in range(other):
+                data.append(data[-1])
 
         rows: List[List[PuzzlePiece]] = [
             [
@@ -143,7 +179,8 @@ class Puzzle:
 
     def build_border(self, puzzle: int, piece: int, *, start: str, middle: str, end: str) -> str:
         """Build puzzle border line."""
-        res = start + '─' * puzzle + end
+        # We subtract 2 to accomodate for start and end characters.
+        res = start + '─' * (puzzle - 2) + end
         border_count = 1
         for i in range(piece, (puzzle - piece)):
             if i % piece == 0:
