@@ -1,7 +1,7 @@
 from os import path
-from typing import Union
 
 from blessed import Terminal
+from blessed.keyboard import Keystroke
 from highscore import Highscore
 from images import Image
 from menus.utils import Menu, State
@@ -58,25 +58,25 @@ class Game(Menu):
 
         return rendered
 
-    def kinput(self, term: Terminal, key: Union[int, None]) -> None:
+    def kinput(self, term: Terminal, key: Keystroke) -> None:
         """Handle keyboard input (what button is selected)."""
         if self.selected == 0:  # input for puzzle mode
-            if key == term.KEY_UP:
+            if key.code == term.KEY_UP:
                 self.puzzle.move_down()
-            elif key == term.KEY_RIGHT:
+            elif key.code == term.KEY_RIGHT:
                 self.puzzle.move_left()
-            elif key == term.KEY_DOWN:
+            elif key.code == term.KEY_DOWN:
                 self.puzzle.move_up()
-            elif key == term.KEY_LEFT:
+            elif key.code == term.KEY_LEFT:
                 self.puzzle.move_right()
-            elif key == term.KEY_TAB:
+            elif key.code == term.KEY_TAB:
                 self.selected = 1
 
             if self.puzzle.solved:  # Check if puzzle is solve, which also updates time elapsed
                 # TODO: implement timeout for key input (time will only update, if key is hit)
                 self.selected = 2
         elif self.selected == 1:  # input when 'Exit' is selected
-            if key == term.KEY_TAB:
+            if key.code == term.KEY_TAB:
                 self.selected = 0
         elif self.selected == 2:  # input when puzzle is solved
             # TODO: process user name input
