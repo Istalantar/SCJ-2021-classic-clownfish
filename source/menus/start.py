@@ -38,8 +38,8 @@ class StartMenu(Menu):
         for line in INSIDE_THE_BOX:
             rendered += term.center(term.black_on_white(line) if self.selected == 0 else line) + '\n'
 
-        rendered += term.move_y(term.height - 3)
-        rendered += ' ' * 4 + (term.black_on_white('Exit') if self.selected == 1 else 'Exit')
+        rendered += term.move_yx(term.height - 3, 4)
+        rendered += (term.black_on_white('Exit') if self.selected == 1 else 'Exit')
         return rendered
 
     def kinput(self, term: Interface, key: Keystroke) -> None:
