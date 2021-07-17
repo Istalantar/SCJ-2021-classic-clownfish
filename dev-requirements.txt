@@ -3,6 +3,9 @@
 # This list will have to be migrated if you wish to use another dependency manager.
 
 # Base tools
+pillow~=8.3.1
+numpy~=1.21.0
+blessed~=1.18.1
 flake8~=3.7
 isort~=5.9
 pre-commit~=2.13.0
