@@ -1,3 +1,4 @@
+import string
 from os import path
 
 from blessed import Terminal
@@ -54,7 +55,7 @@ class Game(Menu):
             rendered += term.move_xy(4, term.height - 3) + term.black_on_white('Exit')
         elif self.selected == 2:  # puzzle is solved
             rendered += term.center(term.red_on_black('Congratulations, you completed the puzzle'))
-            rendered += term.center('Please put in your name for the highscore: ' + self.player_name)
+            rendered += term.center('Please put in your name for the highscore (letters only): ' + self.player_name)
 
         return rendered
 
@@ -79,7 +80,8 @@ class Game(Menu):
             if key.code == term.KEY_TAB:
                 self.selected = 0
         elif self.selected == 2:  # input when puzzle is solved
-            # TODO: process user name input
+            if key in string.ascii_letters:
+                self.player_name += key
             pass
 
     def click(self, term: Terminal) -> State:
