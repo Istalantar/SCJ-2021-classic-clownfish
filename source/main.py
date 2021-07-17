@@ -20,7 +20,6 @@ class Interface(Terminal):
         """Propogate keyboard input."""
         if key.code == self.KEY_ENTER:
             self.state = self.state.click(self)
-            self.selected = 0  # Reset
         else:
             self.selected = self.state.kinput(self, key)
 
