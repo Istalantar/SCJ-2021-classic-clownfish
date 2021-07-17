@@ -30,8 +30,17 @@ class HighScoreSubMenu(Menu):
     def render(self, term: Interface) -> str:
         """Render the highscores."""
         rendered = []
+        rendered.append(term.move_down(1))
         for i, highscore in enumerate(self.highscores):
-            rendered.append(f'{i + 1}. {highscore["Name"]}')
+            color = term.webgrey
+            if i == 0:
+                color = term.color_rgb(215, 190, 105)
+            if i == 1:
+                color = term.color_rgb(192, 192, 192)
+            if i == 2:
+                color = term.color_rgb(169, 113, 66)
+
+            rendered.append(term.move_x(4) + color(f'{i + 1}. {highscore["Name"]}'))
 
         rendered.append(term.move_yx(term.height - 3, 4) + 'Press enter to play this puzzle')
         return '\n'.join(rendered)
