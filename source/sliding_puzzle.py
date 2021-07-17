@@ -84,7 +84,7 @@ class Puzzle:
 
     rows: List[List[PuzzlePiece]]
 
-    __slots__ = ('rows',)
+    __slots__ = ('rows', 'dim')
 
     def __init__(self, image: str, horizontal: int, vertical: int) -> None:
         """Initialize the Puzzle with an image and size to split it by.
@@ -125,6 +125,7 @@ class Puzzle:
                 rows[i//height][j].append(column)
 
         self.rows = rows
+        self.dim = (horizontal, vertical)
 
     def __repr__(self) -> str:
         return f'<Puzzle solved={self.solved} rows={self.rows}>'
@@ -180,6 +181,37 @@ class Puzzle:
         random.shuffle(self.rows)
         # Clear a random piece
         random.choice(random.choice(self.rows)).clear()
+
+    def shuffle2(self, difficulty: int = 50) -> None:
+        """Shuffle the puzzle by randomizing the order of the pieces
+
+        :param difficulty: approx. maximum number of iterations"""
+        random.choice(random.choice(self.rows)).clear()
+        clear_id = self._get_empty_piece_position()
+        clear_id = [clear_id.x, clear_id.y]
+        hash = [[v*self.dim[0]+i for i in range(self.dim[0])] for v in range(self.dim[1])]
+        iters = random.randint(difficulty//2, difficulty)
+
+        for i in range(iters):
+            # get the piece to move
+            axis = random.choice([0, 1])
+            incr = random.choice([1, -1])
+            index = clear_id.copy()
+            if clear_id[axis] + incr in range(0, self.dim[axis]):
+                index[axis] = clear_id[axis] + incr
+            else:
+                index[axis] = clear_id[axis] - incr
+
+            # swap values
+            hash[index[1]][index[0]], hash[clear_id[1]][clear_id[0]] \
+                = hash[clear_id[1]][clear_id[0]], hash[index[1]][index[0]]
+            clear_id = index
+        for v, row in enumerate(self.rows):
+            for h, piece in enumerate(row):
+                index = hash[v][h]
+                y2 = index//self.dim[1]
+                x2 = index%self.dim[1]
+                self._swap_pieces(h, v, x2, y2)
 
     def _get_empty_piece_position(self) -> PiecePosition:
         x, y, index = [
