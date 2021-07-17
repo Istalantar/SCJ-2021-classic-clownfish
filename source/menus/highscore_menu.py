@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 
 from blessed import Terminal as Interface
 from blessed.keyboard import Keystroke
-from game import Game
 from highscore import Highscore
 
 from .choose_file import ChooseFile

@@ -101,11 +101,11 @@ class Puzzle:
                 raise ValueError('Image is not a complete rectangle, make sure it is correctly padded.')
 
         # How many characters one piece is
-        width = round(len(data[0]) / horizontal)
-        height = round(len(data) / vertical)
+        width = round(len(image[0]) / horizontal)
+        height = round(len(image) / vertical)
 
-        wlen = len(data[0])
-        hlen = len(data)
+        wlen = len(image[0])
+        hlen = len(image)
 
         # If the width was rounded down
         if width * horizontal < wlen:
@@ -113,9 +113,9 @@ class Puzzle:
             half = diff // 2  # Cut decimals
             # half + half may not be equal to diff because of decimals
             other = diff - half
-            for i, line in enumerate(data):
+            for i, line in enumerate(image):
                 # Crop parts of each line
-                data[i] = line[half:other * -1]
+                image[i] = line[half:other * -1]
 
         # If the width was rounded up
         elif width * horizontal > wlen:
@@ -123,9 +123,9 @@ class Puzzle:
             half = diff // 2
             # See above
             other = diff - half
-            for i, line in enumerate(data):
+            for i, line in enumerate(image):
                 # Add padding (copying the last few characters)
-                data[i] = (line[0] * half) + line + (line[-1] * other)
+                image[i] = (line[0] * half) + line + (line[-1] * other)
 
         # If the height was rounded down
         if height * vertical < hlen:
@@ -133,7 +133,7 @@ class Puzzle:
             half = diff // 2
             other = diff - half
             # Cut parts of the image
-            data = data[half:other * -1]
+            image = image[half:other * -1]
 
         # If the height was rounded up
         elif height * vertical > hlen:
@@ -143,11 +143,11 @@ class Puzzle:
 
             # Insert copies of the first line
             for _ in range(half):
-                data.insert(0, data[0])
+                image.insert(0, image[0])
 
             # Append copies of the last line
             for _ in range(other):
-                data.append(data[-1])
+                image.append(image[-1])
 
         rows: List[List[PuzzlePiece]] = [
             [

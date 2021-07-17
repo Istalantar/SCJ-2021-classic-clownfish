@@ -5,8 +5,8 @@ import PIL
 from blessed import Terminal as Interface
 from blessed.keyboard import Keystroke
 
-from .utils import Menu, PopupMessage
 from .puzzle_setting import PuzzleSetting
+from .utils import Menu, PopupMessage
 
 if TYPE_CHECKING:
     # Interface is a subclass of Terminal, importing it directly would cause circular imports
