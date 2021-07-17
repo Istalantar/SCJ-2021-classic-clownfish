@@ -1,11 +1,12 @@
 import os
 from typing import TYPE_CHECKING
 
+import PIL
 from blessed import Terminal as Interface
 from blessed.keyboard import Keystroke
 from game import Game
 
-from .utils import Menu
+from .utils import Menu, PopupMessage
 
 if TYPE_CHECKING:
     # Interface is a subclass of Terminal, importing it directly would cause circular imports
@@ -33,7 +34,7 @@ class ChooseFile(Menu):
             if os.path.isdir(os.path.join(self.current_dir, item)):
                 self.dirs.append(item + '/')
 
-            elif item.endswith(SUPPORTED_FILE_TYPES):
+            else:
                 self.files.append(item)
 
     def render(self, term: Interface) -> str:
@@ -46,7 +47,7 @@ class ChooseFile(Menu):
         for i, item in enumerate(self.dirs):
             line = (' ' * 4 + item).ljust(term.width)
 
-            rendered.append(term.black_on_blue(line) if self.selected == i else line)
+            rendered.append(term.black_on_blue(line) if self.selected == i else term.blue(line))
 
         for i, item in enumerate(self.files):
             line = (' ' * 4 + item).ljust(term.width)
@@ -69,10 +70,15 @@ class ChooseFile(Menu):
         if self.selected < len(self.dirs):  # If it is a folder that is selected (they always come first)
             self.init_files(os.path.abspath(os.path.join(self.current_dir, self.dirs[self.selected])))
             return self  # Don't change state
-
-        return Game(
-            os.path.abspath(
-                # The subtraction is to accomodate for directories being selected
-                os.path.join(self.current_dir, self.files[self.selected - len(self.dirs)])
+          
+        filename = self.files[self.selected - len(self.dirs)]
+        try:
+            return Game(
+                os.path.abspath(
+                    # The subtraction is to accomodate for directories being selected
+                    os.path.join(self.current_dir, filename)
+                )
             )
-        )
+        except PIL.UnidentifiedImageError:
+            # Invalid image
+            return PopupMessage(self, f'Attempted to open {filename}, but did not recognize an image', term.red)
