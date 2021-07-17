@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from blessed import Terminal as Interface
 from blessed.keyboard import Keystroke
 from highscore import Highscore
+from game import Game
 
 from .choose_file import ChooseFile
 from .utils import Menu, set_string_length
@@ -46,7 +47,7 @@ class HighScoreMenu(Menu):
     def click(self, term: Interface) -> Menu:
         """Handle enter key presses, changing state to file_explorer if the Add new button is selected."""
         if self.selected != len(self.puzzles):
-            return self  # Don't change menu
+            return Game(self.puzzles[self.selected]['Puzzle'])  # Don't change menu
 
         return ChooseFile()
 
