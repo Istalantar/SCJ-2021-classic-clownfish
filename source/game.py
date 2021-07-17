@@ -1,7 +1,7 @@
 import string
 from os import path
 
-from blessed import Terminal
+from blessed import Terminal as Interface
 from blessed.keyboard import Keystroke
 from highscore import Highscore
 from images import Image
@@ -29,7 +29,7 @@ class Game(Menu):
         self.puzzle = Puzzle(self.image.generate_ascii, 3, 3)
         self.puzzle.shuffle()
 
-    def render(self, term: Terminal) -> str:
+    def render(self, term: Interface) -> str:
         """Render the game-menu."""
         # displayed content regardless of 'selected'
         rendered = term.move_y(3)  # just a spacing of four
@@ -37,9 +37,7 @@ class Game(Menu):
                                 + f'Time {self.puzzle.time_needed}')
         rendered += term.move_down
 
-        lines = self.puzzle.draw().split('\n')
-
-        for line in lines:
+        for line in self.puzzle.draw().split('\n'):
             rendered += term.center(line)
 
         rendered += term.move_down(2)
@@ -84,7 +82,7 @@ class Game(Menu):
                 self.player_name += key
             pass
 
-    def click(self, term: Terminal) -> State:
+    def click(self, term: Interface) -> State:
         """Handle a enter-press."""
         if self.selected == 1:
             return State.start
@@ -93,9 +91,3 @@ class Game(Menu):
             return State.highscore
         else:
             return State.playing
-
-
-if __name__ == '__main__':
-    game = Game('../resources/phoenix.jpg')
-    t_term = Terminal()
-    print(game.render(t_term))
