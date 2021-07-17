@@ -1,11 +1,10 @@
 from typing import TYPE_CHECKING
 
 from blessed import Terminal as Interface
-from blessed.keyboard import Keystroke
+from game import Game
 from highscore import Highscore
 
 from .utils import Menu
-from game import Game
 
 if TYPE_CHECKING:
     # Interface is a subclass of Terminal, importing it directly would cause circular imports
