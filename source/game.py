@@ -1,18 +1,17 @@
 import string
-from os import path
 
-from blessed import Terminal
+from blessed import Terminal as Interface
 from blessed.keyboard import Keystroke
 from highscore import Highscore
 from images import Image
-from menus.utils import Menu, State
+from menus.utils import Menu
 from sliding_puzzle import Puzzle
 
 
 class Game(Menu):
     """Game menu where the user is playing."""
 
-    def __init__(self, image: str, difficulty: int = 1):
+    def __init__(self, image: str):
         """Init function
 
         :param image: Image path
@@ -20,24 +19,23 @@ class Game(Menu):
         """
         self.selected = 0
         self.player_name = ''
-        self.image_name = path.basename(image).split('.')[0]
 
-        difficulty = min(5, max(difficulty, 1))
-
+        self.path = image
         self.image = Image(image, 90)
 
-        self.puzzle = Puzzle(self.image.generate_ascii, 3, 3)
+        self.puzzle = Puzzle(self.image.generate_ascii, 2, 2)
         self.puzzle.shuffle()
 
-    def render(self, term: Terminal) -> str:
+    def render(self, term: Interface) -> str:
         """Render the game-menu."""
         # displayed content regardless of 'selected'
         rendered = term.move_y(3)  # just a spacing of four
-        rendered += term.center(f'Moves: {self.puzzle.moves_done}' + term.move_right(4)
-                                + f'Time {self.puzzle.time_needed}')
-        rendered += term.move_down
+        rendered += term.center(
+            f'Moves: {self.puzzle.moves_done}' + term.move_right(4) + f'Time {self.puzzle.time_needed}'
+        )
+        rendered += term.move_down(1)
 
-        for line in self.puzzle.draw(term).split('\n'):
+        for line in self.puzzle.draw().split('\n'):
             rendered += term.center(line)
 
         rendered += term.move_down(2)
@@ -57,7 +55,7 @@ class Game(Menu):
 
         return rendered
 
-    def kinput(self, term: Terminal, key: Keystroke) -> None:
+    def kinput(self, term: Interface, key: Keystroke) -> None:
         """Handle keyboard input (what button is selected)."""
         if self.selected == 0:  # input for puzzle mode
             if key.code == term.KEY_UP:
@@ -80,20 +78,18 @@ class Game(Menu):
         elif self.selected == 2:  # input when puzzle is solved
             if key in string.ascii_letters:
                 self.player_name += key
-            pass
 
-    def click(self, term: Terminal) -> State:
+            elif key.code in (term.KEY_BACKSPACE, term.KEY_DELETE):
+                self.player_name = self.player_name[:-1]
+
+    def click(self, term: Interface) -> Menu:
         """Handle a enter-press."""
         if self.selected == 1:
-            return State.start
+            from menus.start import StartMenu
+            return StartMenu()
         elif self.selected == 2:
-            Highscore().add(self.image_name, self.player_name, self.puzzle.moves_done, self.puzzle.time_needed)
-            return State.highscore
+            Highscore().add(self.path, self.player_name, self.puzzle.moves_done, self.puzzle.time_needed)
+            from menus.highscore_menu import HighScoreMenu  # Circular imports
+            return HighScoreMenu()
         else:
-            return State.playing
-
-
-if __name__ == '__main__':
-    game = Game('../resources/phoenix.jpg')
-    t_term = Terminal()
-    print(game.render(t_term))
+            return self
