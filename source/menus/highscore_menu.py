@@ -1,9 +1,12 @@
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from blessed import Terminal as Interface
+from blessed.keyboard import Keystroke
 from highscore import Highscore
+from game import Game
 
-from .utils import Menu, State, set_string_length
+from .choose_file import ChooseFile
+from .utils import Menu, set_string_length
 
 if TYPE_CHECKING:
     # Interface is a subclass of Terminal, importing it directly would cause circular imports
@@ -41,18 +44,18 @@ class HighScoreMenu(Menu):
         rendered += ' ' * 4 + (term.black_on_white('Add new') if self.selected == len(self.puzzles) else 'Add new')
         return rendered
 
-    def click(self, term: Interface) -> State:
+    def click(self, term: Interface) -> Menu:
         """Handle enter key presses, changing state to file_explorer if the Add new button is selected."""
         if self.selected != len(self.puzzles):
-            return State.highscore  # Don't change menu
+            return Game(self.puzzles[self.selected]['Puzzle'])  # Don't change menu
 
-        return State.file_explorer
+        return ChooseFile()
 
-    def kinput(self, term: Interface, key: Union[int, None]) -> None:
+    def kinput(self, term: Interface, key: Keystroke) -> None:
         """Handle arrow key input, changing the selected button."""
-        if key == term.KEY_UP:
+        if key.code == term.KEY_UP:
             self.selected -= 1
-        elif key == term.KEY_DOWN:
+        elif key.code == term.KEY_DOWN:
             self.selected += 1
 
         # Clamp the value

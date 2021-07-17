@@ -1,6 +1,9 @@
+import datetime
 import random
 from dataclasses import dataclass
 from typing import List
+
+from main import Interface
 
 
 def walk(string: str, step: int) -> str:
@@ -37,13 +40,16 @@ class PuzzlePiece:
     """Piece of a bigger puzzle."""
 
     index: int
+    empty: bool
 
     width: int
     height: int
 
-    __slots__ = ('index', 'width', 'height', '_data')
+    __slots__ = ('index', 'empty', 'width', 'height', '_data')
 
     def __init__(self, index: int, width: int, height: int) -> None:
+        self.empty = False
+
         self.index = index
 
         self.width = width
@@ -54,21 +60,15 @@ class PuzzlePiece:
     def __repr__(self) -> str:
         return f'<PuzzlePiece index={self.index} width={self.width} height={self.height} empty={self.empty}>'
 
-    def __str__(self) -> str:
-        return '\n'.join(self.data)
-
     def __bool__(self) -> bool:
         return bool(self._data)
 
-    @property
-    def data(self) -> List[str]:
+    def get_data(self, term: Interface, *, solved: bool = False) -> List[str]:
         """List of lines of the image."""
-        return self._data or [' ' * self.width] * self.height
-
-    @property
-    def empty(self) -> bool:
-        """Whether this piece is empty (not filled)."""
-        return not bool(self)
+        if self.empty and solved:
+            return [term.webgray_on_black(line) for line in self._data]
+        else:
+            return [' ' * self.width] * self.height if self.empty else self._data
 
     def append(self, string: str) -> None:
         """Append a string to the end of the data list."""
@@ -76,7 +76,7 @@ class PuzzlePiece:
 
     def clear(self) -> None:
         """Clear the piece data"""
-        self._data = list()
+        self.empty = True
 
 
 class Puzzle:
@@ -84,31 +84,31 @@ class Puzzle:
 
     rows: List[List[PuzzlePiece]]
 
-    __slots__ = ('rows', 'dim')
-
-    def __init__(self, image: str, horizontal: int, vertical: int) -> None:
+    def __init__(self, image: List[str], horizontal: int, vertical: int) -> None:
         """Initialize the Puzzle with an image and size to split it by.
 
-        :param image: An ASCII string that will be split
+        :param image: A list of ASCII string rows
         :param horizontal: Amount of horizontal rows
         :param vertical: Amount of vertical rows
         """
-        data = image.split('\n')
+        self.moves_done = 0
+        self.start_time = datetime.datetime.now()
+        self.time_needed = 0
 
-        length = len(data[0])
-        for line in data:
+        length = len(image[0])
+        for line in image:
             if length != len(line):  # Make sure that all strings are equal in length
                 raise ValueError('Image is not a complete rectangle, make sure it is correctly padded.')
 
         # How many characters one piece is
-        width = len(data[0]) / horizontal
-        height = len(data) / vertical
+        width = len(image[0]) / horizontal
+        height = len(image) / vertical
 
         # We cannot handle decimals
         if not width.is_integer():
-            raise ValueError(f'Image cannot be evenly split by width: {len(data[0])} / {horizontal}')
+            raise ValueError(f'Image cannot be evenly split by width: {len(image[0])} / {horizontal}')
         elif not height.is_integer():
-            raise ValueError(f'Image cannot be evenly split by height: {len(data)} / {vertical}')
+            raise ValueError(f'Image cannot be evenly split by height: {len(image)} / {vertical}')
 
         # Even though width and height have no decimals, they are still floats
         width, height = int(width), int(height)
@@ -120,7 +120,7 @@ class Puzzle:
             ] for v in range(vertical)
         ]
 
-        for i, line in enumerate(data):
+        for i, line in enumerate(image):
             for j, column in enumerate(walk(line, width)):
                 rows[i//height][j].append(column)
 
@@ -134,6 +134,7 @@ class Puzzle:
     def solved(self) -> bool:
         """Whether the puzzle is considered solved."""
         i = 0
+        self.time_needed = (datetime.datetime.now() - self.start_time).seconds  # updates time elapsed
         for row in self.rows:
             for piece in row:
                 if piece.index != i:
@@ -153,7 +154,7 @@ class Puzzle:
                 border_count += 1
         return res
 
-    def draw(self) -> str:
+    def draw(self, term: Interface) -> str:
         """Draw the puzzle in its current state."""
         nbr_separators = len(self.rows) - 1
         piece_width = self.rows[0][0].width
@@ -164,7 +165,7 @@ class Puzzle:
 
         # build content
         for index, row in enumerate(self.rows):
-            row = [bordered(piece.data) for piece in row]
+            row = [bordered(piece.get_data(term, solved=self.solved)) for piece in row]
             output.extend(join(row))
             if index < len(self.rows) - 1:
                 output.extend([self.build_border(puzzle_width, piece_width, start="├", middle="┼", end="┤")])
@@ -251,3 +252,4 @@ class Puzzle:
 
     def _swap_pieces(self, x1: int, y1: int, x2: int, y2: int) -> None:
         self.rows[y1][x1], self.rows[y2][x2] = self.rows[y2][x2], self.rows[y1][x1]
+        self.moves_done += 1

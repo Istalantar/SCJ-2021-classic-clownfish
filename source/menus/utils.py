@@ -1,20 +1,11 @@
-from enum import Enum
-from typing import TYPE_CHECKING, Protocol, Union
+from typing import TYPE_CHECKING, Protocol
 
 from blessed import Terminal as Interface
+from blessed.keyboard import Keystroke
 
 if TYPE_CHECKING:
     # Interface is a subclass of Terminal, importing it directly would cause circular imports
     from ..main import Interface  # noqa: F811
-
-
-class State(Enum):
-    """Current menu selected."""
-
-    start = 0
-    highscore = 1
-    file_explorer = 2
-    playing = 3
 
 
 class Menu(Protocol):
@@ -28,12 +19,12 @@ class Menu(Protocol):
         """Render the menu, this method should return a string that will be printed."""
         ...
 
-    def kinput(self, term: Interface, key: Union[int, None]) -> None:
-        """Handle any keyboard input, this method should return a new selected integer."""
+    def kinput(self, term: Interface, key: Keystroke) -> None:
+        """Handle any keyboard input however the menu see fit.."""
         ...
 
-    def click(self, term: Interface) -> State:
-        """Handle ENTER presses, this method should return a new State enum."""
+    def click(self, term: Interface) -> 'Menu':  # Forward reference
+        """Handle ENTER presses, this method should return a menu instance."""
         ...
 
 
