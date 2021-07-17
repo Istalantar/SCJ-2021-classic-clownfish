@@ -22,6 +22,7 @@ class HighScoreMenu(Menu):
         self.highscores = Highscore().highscore
         self.puzzles = {}
         for hs in self.highscores:
+            hs['Puzzle'] = hs['Puzzle'].split('/')[-1]
             if not hs['Puzzle'] in self.puzzles:
                 self.puzzles[hs['Puzzle']] = hs
             else:
