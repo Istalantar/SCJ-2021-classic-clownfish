@@ -82,12 +82,12 @@ class Image:
         :return: A list of strings each representing a row of the image.
         """
         horizontal, vertical = self.image.size
-        self.cols = min(self.cols, horizontal)  # clamps the number of cols
+        self.cols = min(self.cols, horizontal, 100)  # clamps the number of cols
         # compute tile dimensions based on aspect ratio and scale
         w = horizontal // self.cols
         h = int(w / self.scale)
         rows = vertical // h
-        rows = min(rows, vertical)  # clamps the number of rows
+        rows = min(rows, vertical, 30)  # clamps the number of rows
 
         aimg = []
         # generate list of dimensions
