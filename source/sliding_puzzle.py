@@ -213,11 +213,11 @@ class Puzzle:
 
     def shuffle(self) -> None:
         """Shuffle the puzzle by randomizing the order of the pieces"""
-        for row in self.rows:
-            random.shuffle(row)
-        random.shuffle(self.rows)
-        # Clear a random piece
-        random.choice(random.choice(self.rows)).clear()
+        random.choice(random.choice(self.rows)).clear()  # Clear a random piece
+
+        choices = [self.move_up, self.move_down, self.move_right, self.move_left]
+        for _ in range(len(self.rows) ** len(self.rows[0])):
+            random.choice(choices)()
 
     def _get_empty_piece_position(self) -> PiecePosition:
         x, y, index = [
