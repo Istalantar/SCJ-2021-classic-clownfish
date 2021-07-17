@@ -210,7 +210,7 @@ class Puzzle:
             for h, piece in enumerate(row):
                 index = hash[v][h]
                 y2 = index//self.dim[1]
-                x2 = index%self.dim[1]
+                x2 = index % self.dim[1]
                 self._swap_pieces(h, v, x2, y2)
 
     def _get_empty_piece_position(self) -> PiecePosition:
