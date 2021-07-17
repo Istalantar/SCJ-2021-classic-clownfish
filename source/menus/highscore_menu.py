@@ -5,6 +5,7 @@ from blessed.keyboard import Keystroke
 from highscore import Highscore
 
 from .choose_file import ChooseFile
+from .highscore_submenu import HighScoreSubMenu
 from .utils import Menu, set_string_length
 
 if TYPE_CHECKING:
@@ -18,35 +19,60 @@ class HighScoreMenu(Menu):
     def __init__(self):
         self.selected = 0
 
-        self.puzzles = Highscore().highscore
+        self.highscores = Highscore().highscore
+        self.puzzles = {}
+        for hs in self.highscores:
+            if not hs['Puzzle'] in self.puzzles:
+                self.puzzles[hs['Puzzle']] = hs
+            else:
+                puzzle = self.puzzles[hs['Puzzle']]
+                if hs['Moves'] + hs['Time'] < puzzle['Moves'] + puzzle['Time']:
+                    self.puzzles[hs['Puzzle']] = hs
+                if hs['Moves'] + hs['Time'] == puzzle['Moves'] + puzzle['Time']:
+                    self.puzzles[hs['Puzzle']] = {
+                        'Puzzle': hs['Puzzle'],
+                        'Name': 'Shared 1st place',
+                        'Time': 0,
+                        'Moves': 0
+                    }
 
     def render(self, term: Interface) -> str:
         """Render the highscore table and a button to add new highscore."""
-        rendered = ''
-
-        rendered += (
-            '    ' + set_string_length('Puzzle Name', term.width - 52)
-            + '   ' + 'Player Name     '
-            + '  ' + 'Highscore                  '
-        ) + '\n\n'
+        rendered = []
+        rendered.append(
+            '    '
+            + set_string_length('Puzzle name', term.width - 40)
+            + set_string_length('Record holder', 32)
+            + '    ' + '\n'
+        )
 
         for i, puzzle in enumerate(self.puzzles):
+            puzzle = self.puzzles[puzzle]
+            rendered.append(
+                (term.black_on_white if self.selected == i else str)(
+                    '    '
+                    + set_string_length(puzzle['Puzzle'], term.width - 40)
+                    + set_string_length(puzzle['Name'], 32)
+                    + '    '
+                )
+            )
 
-            line = '    '
-            line += set_string_length(puzzle['Puzzle'], term.width - 52) + '   '
-            line += set_string_length(puzzle['Name'], 16) + '  '
-            line += set_string_length(str(puzzle['Time']) + ' Seconds / ' + str(puzzle['Moves']) + ' Moves', 27)
-            rendered += term.black_on_white(line) if self.selected == i else line
-            rendered += '\n'
+        rendered.append(
+            term.move_yx(term.height - 3, 4)
+            + (term.black_on_white('From files') if self.selected == len(self.puzzles) else 'From files')
+        )
 
-        rendered += term.move_y(term.height - 3)
-        rendered += ' ' * 4 + (term.black_on_white('Add new') if self.selected == len(self.puzzles) else 'Add new')
-        return rendered
+        return '\n'.join(rendered)
 
     def click(self, term: Interface) -> Menu:
         """Handle enter key presses, changing state to file_explorer if the Add new button is selected."""
         if self.selected != len(self.puzzles):
-            return self  # Don't change menu
+            selected_puzzle_name: str
+            for i, item in enumerate(self.puzzles):
+                if i == self.selected:
+                    selected_puzzle_name = item
+
+            return HighScoreSubMenu(selected_puzzle_name)
 
         return ChooseFile()
 
