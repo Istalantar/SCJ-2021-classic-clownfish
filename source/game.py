@@ -37,9 +37,7 @@ class Game(Menu):
                                 + f'Time {self.puzzle.time_needed}')
         rendered += term.move_down
 
-        lines = self.puzzle.draw().split('\n')
-
-        for line in lines:
+        for line in self.puzzle.draw(term).split('\n'):
             rendered += term.center(line)
 
         rendered += term.move_down(2)
@@ -54,7 +52,7 @@ class Game(Menu):
             rendered += term.center('Hit TAB to go back to the puzzle')
             rendered += term.move_xy(4, term.height - 3) + term.black_on_white('Exit')
         elif self.selected == 2:  # puzzle is solved
-            rendered += term.center(term.red_on_black('Congratulations, you completed the puzzle'))
+            rendered += term.center(term.green_on_black('Congratulations, you completed the puzzle'))
             rendered += term.center('Please put in your name for the highscore (letters only): ' + self.player_name)
 
         return rendered
