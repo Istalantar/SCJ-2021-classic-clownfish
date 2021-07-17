@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 import PIL
 from blessed import Terminal as Interface
 from blessed.keyboard import Keystroke
-from game import Game
 
+from .puzzle_setting import PuzzleSetting
 from .utils import Menu, PopupMessage
 
 if TYPE_CHECKING:
@@ -73,7 +73,7 @@ class ChooseFile(Menu):
 
         filename = self.files[self.selected - len(self.dirs)]
         try:
-            return Game(
+            return PuzzleSetting(
                 os.path.abspath(
                     # The subtraction is to accomodate for directories being selected
                     os.path.join(self.current_dir, filename)
