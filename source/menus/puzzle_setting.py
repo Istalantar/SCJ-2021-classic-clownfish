@@ -22,11 +22,12 @@ class PuzzleSetting(Menu):
         if self.selected in range(7):
             rendered += term.center('Pick the size the puzzle should have')
             rendered += self.__puzzle_size(term)
-            rendered += term.move_y(3)
-            rendered += term.center('┌' + '─' * (self.columns - 2) + '┐')
-            for _ in range(self.rows):
-                rendered += term.center('│' + term.move_right(self.columns - 2) + '│')
-            rendered += term.center('└' + '─' * (self.columns - 2) + '┘')
+            # TODO: make it work
+            # rendered += term.move_y(3)
+            # rendered += term.center('┌' + '─' * (self.columns - 2) + '┐')
+            # for _ in range(self.rows):
+            #     rendered += term.center('│' + term.move_right(self.columns - 2) + '│')
+            # rendered += term.center('└' + '─' * (self.columns - 2) + '┘')
         elif self.selected in range(10, 17, 1):
             rendered += term.center('Pick the number of puzzle pieces')
             rendered += self.__puzzle_pieces(term)
