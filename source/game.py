@@ -1,5 +1,4 @@
 import string
-from os import path
 
 from blessed import Terminal as Interface
 from blessed.keyboard import Keystroke
@@ -12,25 +11,27 @@ from sliding_puzzle import Puzzle
 class Game(Menu):
     """Game menu where the user is playing."""
 
-    def __init__(self, image: str):
+    def __init__(self, image: str, columns: int, horizontal: int, vertical: int):
         """Init function
 
         :param image: Image path
-        :param difficulty: integer ranging from 1 to 5. Defaults to 1.
+        :param columns: Image width
+        :param horizontal: Number of horizontal puzzle pieces
+        :param vertical: Number of vertical puzzle pieces
         """
         self.selected = 0
         self.player_name = ''
 
         self.path = image
-        self.image = Image(image, 90)
+        self.image = Image(image, columns)
 
-        self.puzzle = Puzzle(self.image.generate_ascii, 2, 2)
+        self.puzzle = Puzzle(self.image.generate_ascii, horizontal, vertical)
         self.puzzle.shuffle()
 
     def render(self, term: Interface) -> str:
         """Render the game-menu."""
         # displayed content regardless of 'selected'
-        rendered = term.move_y(3)  # just a spacing of four
+        rendered = term.move_y(3)  # just a spacing
         rendered += term.center(
             f'Moves: {self.puzzle.moves_done}' + term.move_right(4) + f'Time {self.puzzle.time_needed}'
         )

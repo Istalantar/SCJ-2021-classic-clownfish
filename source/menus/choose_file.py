@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 import PIL
 from blessed import Terminal as Interface
 from blessed.keyboard import Keystroke
-from game import Game
 
 from .utils import Menu, PopupMessage
+from .puzzle_setting import PuzzleSetting
 
 if TYPE_CHECKING:
     # Interface is a subclass of Terminal, importing it directly would cause circular imports
@@ -73,7 +73,7 @@ class ChooseFile(Menu):
 
         filename = self.files[self.selected - len(self.dirs)]
         try:
-            return Game(
+            return PuzzleSetting(
                 os.path.abspath(
                     # The subtraction is to accomodate for directories being selected
                     os.path.join(self.current_dir, filename)
