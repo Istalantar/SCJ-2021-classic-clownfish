@@ -12,3 +12,9 @@ flake8-annotations~=2.0
 flake8-bandit~=2.1
 flake8-docstrings~=1.5
 flake8-isort~=4.0
+
+# Framework of choice
+blessed~=1.18.1
+
+# External modules
+Pillow~=8.3.0
