@@ -59,13 +59,13 @@ $ pip install -r requirements.txt
 ```
 
 #### 5. Run the application
-Interestingly enough, it is the same for every platform
+The only thing left to do is start the application.
 ```shell
 $ python source/main.py
 ```
 
 ### Known issues
-- a puzzle cannot be started from the highscore view
-- frame of the puzzle is misaligned
-- due to random arrangement some puzzle are unsolvable
-- asymmetric puzzles produce an error (3x2, 4x3, 5x4)
+- A puzzle cannot be started from the highscore view
+- Frame of the puzzle is misaligned
+- Due to random arrangement some puzzle are unsolvable
+- Asymmetric puzzles produce an error (3x2, 4x3, 5x4)
